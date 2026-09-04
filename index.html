@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сайншанд сум — Өвөлжилтийн Бэлтгэл БҮХ СЛАЙДЫН НЭГДСЭН ТАЙЛАН</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════
+   RESET & BASE STYLES
+══════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0d2137;
+  --blue:#1565c0;
+  --sky:#1e88e5;
+  --teal:#00897b;
+  --gold:#f9a825;
+  --red:#e53935;
+  --green:#2e7d32;
+  --purple:#6a1b9a;
+  --orange:#e65100;
+  --bg:#060f1a;
+  --card:rgba(255,255,255,0.05);
+  --card-hover:rgba(255,255,255,0.09);
+  --border:rgba(255,255,255,0.12);
+  --text:#e8edf2;
+  --muted:rgba(255,255,255,0.65);
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Montserrat','Segoe UI','Arial Unicode MS',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ══════════════════════════════════
+   BACKGROUNDS & BLOBS
+══════════════════════════════════ */
+.bg-blobs{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;overflow:hidden;
+}
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(90px);
+}
+.blob-1{
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(21,101,192,0.22),transparent 70%);
+  top:-200px;left:-150px;
+  animation:blob1 22s ease-in-out infinite;
+}
+.blob-2{
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(0,137,123,0.2),transparent 70%);
+  bottom:5%;right:-100px;
+  animation:blob2 28s ease-in-out infinite;
+  animation-delay:-8s;
+}
+.blob-3{
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(249,168,37,0.15),transparent 70%);
+  top:40%;left:35%;
+  animation:blob3 18s ease-in-out infinite;
+  animation-delay:-4s;
+}
+@keyframes blob1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(120px,40px) scale(0.95);}}
+@keyframes blob2{0%,100%{transform:translate(0,0) scale(1);}60%{transform:translate(60px,-80px) scale(0.9);}}
+@keyframes blob3{0%,100%{transform:translate(0,0) scale(1);}70%{transform:translate(-80px,-60px) scale(0.88);}}
+
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+}
+
+#particles{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:0;
+  opacity:0.35;
+}
+
+/* ══════════════════════════════════
+   HERO SECTION
+══════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:60px 20px;
+  overflow:hidden;
+  z-index:1;
+}
+.hero-bg-photo{
+  position:absolute;inset:0;z-index:0;
+  background-image:url('images/hero_sainshand.jpg');
+  background-size:cover;
+  background-position:center 45%;
+  animation:heroBgZoom 30s ease-in-out infinite alternate;
+}
+.hero-bg-photo::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(to bottom,
+      rgba(6,15,26,0.65) 0%,
+      rgba(6,15,26,0.4) 40%,
+      rgba(6,15,26,0.75) 75%,
+      rgba(6,15,26,0.98) 100%),
+    radial-gradient(ellipse at 50% 30%, rgba(21,101,192,0.35) 0%, transparent 70%);
+}
+@keyframes heroBgZoom{
+  from{transform:scale(1) translateY(0);}
+  to  {transform:scale(1.07) translateY(-2%);}
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 50% 30%, rgba(21,101,192,0.35) 0%, rgba(6,15,26,0.96) 75%);
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(21,101,192,0.25);
+  border:1px solid rgba(21,101,192,0.5);
+  padding:8px 20px;border-radius:30px;
+  font-size:0.85rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:#90caf9;margin-bottom:24px;
+  animation:fadeDown 0.8s ease both;
+  position:relative;z-index:2;
+}
+.hero-title{
+  text-transform:uppercase;
+  font-size:clamp(2rem,4.5vw,3.6rem);
+  font-weight:900;line-height:1.15;
+  background:linear-gradient(135deg,#fff 0%,#90caf9 50%,#80cbc4 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:fadeDown 0.9s 0.1s ease both;
+  margin-bottom:16px;
+  position:relative;z-index:2;
+  max-width:980px;
+}
+.hero-sub{
+  font-size:1.15rem;color:var(--muted);
+  animation:fadeDown 1s 0.2s ease both;
+  margin-bottom:36px;
+  position:relative;z-index:2;
+}
+
+.score-ring-wrap{
+  position:relative;width:210px;height:210px;
+  margin:0 auto 36px;
+  animation:fadeUp 1s 0.4s ease both;
+  z-index:2;
+}
+.score-ring-wrap svg{transform:rotate(-90deg);}
+.score-ring-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:12;}
+.score-ring-fill{
+  fill:none;stroke:url(#scoreGrad);stroke-width:12;
+  stroke-linecap:round;
+  stroke-dasharray:565;stroke-dashoffset:565;
+  transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1);
+}
+.score-inner{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-num{
+  font-size:3.2rem;font-weight:900;
+  background:linear-gradient(135deg,#fff,#90caf9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.score-label{font-size:0.75rem;color:var(--muted);letter-spacing:1px;margin-top:4px;}
+
+.hero-scroll{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--muted);font-size:0.75rem;letter-spacing:1px;
+  z-index:2;
+}
+.scroll-dot{
+  width:6px;height:6px;background:var(--sky);border-radius:50%;
+  animation:bounce 1.5s ease-in-out infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+
+/* ══════════════════════════════════
+   SECTION LAYOUT
+══════════════════════════════════ */
+section{
+  position:relative;z-index:1;
+  padding:80px 20px;
+  max-width:1240px;margin:0 auto;
+}
+.section-label{
+  text-align:center;
+  font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;
+  color:#64b5f6;margin-bottom:10px;
+  opacity:0;transform:translateY(20px);transition:.6s ease;
+}
+.section-label.visible{opacity:1;transform:translateY(0);}
+.section-title{
+  text-align:center;
+  font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;
+  margin-bottom:48px;
+  opacity:0;transform:translateY(20px);transition:.7s .1s ease;
+}
+.section-title.visible{opacity:1;transform:translateY(0);}
+.section-title span{
+  background:linear-gradient(135deg,#90caf9,#ffd54f);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* ══════════════════════════════════
+   SLIDE CARDS (INDIVIDUAL SLIDES)
+══════════════════════════════════ */
+.slide-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:32px;
+  margin-bottom:36px;
+  opacity:0;transform:translateY(30px);
+  transition:.7s ease;
+}
+.slide-card.visible{opacity:1;transform:translateY(0);}
+.slide-card:hover{border-color:rgba(255,255,255,0.25);background:var(--card-hover);}
+
+.slide-header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;margin-bottom:20px;flex-wrap:wrap;
+  border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:14px;
+}
+.slide-title{font-size:1.35rem;font-weight:800;color:#fff;flex:1;}
+
+.slide-content{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  align-items:start;
+}
+@media(max-width:850px){.slide-content{grid-template-columns:1fr;}}
+
+.slide-full-text{font-size:0.95rem;color:var(--text);line-height:1.75;}
+.slide-full-text p{margin-bottom:14px;}
+.slide-full-text ul{list-style:none;padding:0;margin-bottom:14px;}
+.slide-full-text li{position:relative;padding-left:22px;margin-bottom:10px;color:var(--text);}
+.slide-full-text li::before{
+  content:'●';position:absolute;left:4px;top:0;color:#64b5f6;font-size:0.8rem;
+}
+.slide-card.zaa-card .slide-full-text li::before{color:#ffd54f;}
+
+/* Data Highlights Box */
+.data-box{
+  background:rgba(255,255,255,0.03);
+  border:1px dashed rgba(255,255,255,0.15);
+  border-radius:16px;padding:16px 20px;
+  margin-top:14px;font-size:0.88rem;
+}
+.data-box strong{color:#ffd54f;}
+
+/* Slide Images Carousel / Multi Grid */
+.slide-images-container{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
+}
+.slide-img-box{
+  position:relative;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.15);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  cursor:pointer;
+  transition:transform .3s ease, border-color .3s ease;
+}
+.slide-img-box:hover{transform:scale(1.02);border-color:rgba(100,181,246,0.6);}
+.slide-img-box img{width:100%;height:200px;object-fit:cover;display:block;}
+.slide-img-box .cap{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:6px 10px;background:rgba(6,15,26,0.85);
+  font-size:0.72rem;color:var(--muted);text-align:center;
+}
+
+/* ══════════════════════════════════
+   TABLES IN SLIDES
+══════════════════════════════════ */
+.table-wrap{
+  overflow-x:auto;margin-top:14px;border-radius:14px;
+  border:1px solid var(--border);
+}
+table.slide-table{
+  width:100%;border-collapse:collapse;font-size:0.82rem;text-align:left;
+}
+table.slide-table th{
+  background:rgba(21,101,192,0.3);color:#90caf9;
+  padding:10px 14px;font-weight:700;border-bottom:1px solid var(--border);
+}
+table.slide-table td{
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);
+  color:var(--text);
+}
+table.slide-table tr:hover{background:rgba(255,255,255,0.04);}
+
+/* ══════════════════════════════════
+   LIGHTBOX MODAL
+══════════════════════════════════ */
+.modal{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.92);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal.active{display:flex;}
+.modal-img{max-width:92vw;max-height:88vh;border-radius:12px;box-shadow:0 0 40px rgba(0,0,0,0.9);}
+.modal-close{
+  position:absolute;top:20px;right:30px;
+  font-size:2.5rem;color:#fff;cursor:pointer;
+  line-height:1;
+}
+
+/* ══════════════════════════════════
+   SEPARATORS & DIVIDERS
+══════════════════════════════════ */
+.sep{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  margin:0 auto;max-width:1240px;
+}
+.part-divider{
+  background:linear-gradient(135deg,rgba(21,101,192,0.2),rgba(249,168,37,0.2));
+  border:1px solid rgba(249,168,37,0.4);
+  border-radius:24px;padding:48px 36px;text-align:center;
+  margin:60px auto;max-width:1240px;
+}
+footer{
+  background:rgba(0,0,0,0.5);
+  border-top:1px solid var(--border);
+  text-align:center;padding:40px 20px;
+  color:var(--muted);font-size:0.85rem;
+  position:relative;z-index:1;
+}
+footer strong{color:#90caf9;}
+footer a{color:#64b5f6;text-decoration:none;}
+
+/* ══════════════════════════════════
+   NAV DOTS
+══════════════════════════════════ */
+.nav-dots{
+  position:fixed;right:20px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:100;
+}
+.nav-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,0.2);cursor:pointer;
+  transition:.3s;
+}
+.nav-dot.active{background:#64b5f6;box-shadow:0 0 8px rgba(100,181,246,0.8);}
+.nav-dot:hover{background:#90caf9;transform:scale(1.3);}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══════════════════════════════════
+   INFOGRAPHIC DESIGN SYSTEM & WIDGETS
+══════════════════════════════════ */
+.info-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0 40px 0;
+}
+
+.info-stat-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.info-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #ffd54f);
+  opacity: 0.8;
+}
+
+.info-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 213, 79, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.info-stat-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.info-stat-val {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.info-stat-val span {
+  font-size: 1.1rem;
+  color: #ffd54f;
+  font-weight: 700;
+}
+
+.info-stat-lbl {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+
+.info-progress-box {
+  margin: 12px 0 6px 0;
+}
+
+.info-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.info-progress-bar {
+  height: 8px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.info-progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #2563eb, #10b981);
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-progress-fill.gold {
+  background: linear-gradient(90deg, #f59e0b, #ffd54f);
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.info-badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.info-badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.info-badge-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+}
+
+.hero-chips-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0 28px 0;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-chip-item {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-chip-item strong {
+  color: #ffd54f;
+}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="bg-grid"></div>
+
+<!-- Particle Canvas -->
+<canvas id="particles"></canvas>
+
+<!-- Nav Dots -->
+<div class="nav-dots" id="navDots">
+  <div class="nav-dot active" data-target="hero" title="Нүүр"></div>
+  <div class="nav-dot" data-target="part-haa" title="ХАА Салбар (12 Слайд)"></div>
+  <div class="nav-dot" data-target="part-zaa" title="ЗАА Алба (14 Слайд)"></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════ -->
+<div id="hero" class="hero">
+  <div class="hero-bg-photo"></div>
+  <div class="hero-bg"></div>
+
+  <div class="hero-badge">Сайншанд сумын Засаг Даргын Тамгын Газар</div>
+  <h1 class="hero-title">2026-2027 ОНЫ ӨВӨЛЖИЛТ, ХАВАРЖИЛТЫН БЭЛТГЭЛ АЖЛЫН БҮХ СЛАЙДЫН НЭГДСЭН ТАЙЛАН</h1>
+  <!-- Score ring -->
+  
+
+
+  <div class="score-ring-wrap">
+    <svg viewBox="0 0 200 200" width="200" height="200">
+      <defs>
+        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#1565c0"/>
+          <stop offset="100%" style="stop-color:#ffd54f"/>
+        </linearGradient>
+      </defs>
+      <circle class="score-ring-bg" cx="100" cy="100" r="90"/>
+      <circle class="score-ring-fill" id="scoreCircle" cx="100" cy="100" r="90"/>
+    </svg>
+    <div class="score-inner">
+      <div class="score-num" id="heroScore">0</div>
+      <div class="score-label">НИЙТ ГҮЙЦЭТГЭЛ</div>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:0.88rem;">ХАА Тасаг & ЗАА &nbsp;|&nbsp; Монгол Улсын Засгийн Газрын 2026 оны 286 дугаар тогтоол</p>
+
+  <div class="hero-scroll">
+    <span>ДООШ ҮЗЭХ</span>
+    <div class="scroll-dot"></div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════
+     PART 1: ХӨДӨӨ АЖ АХУЙН ТАСАГ (12 SLIDES)
+═══════════════════════════════════ -->
+<section id="part-haa">
+  <h2 class="section-title reveal-title">ХӨДӨӨ АЖ АХУЙН ТАСАГ</h2>
+
+  <!-- HAA Infographic Dashboard Overview -->
+  <div class="info-dashboard">
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🌾</div>
+      <div class="info-stat-val">18.2 <span>тн</span></div>
+      <div class="info-stat-lbl">Аюулгүйн Өвсний Нөөц (36.4%)</div>
+      <div class="info-progress-box">
+        <div class="info-progress-bar"><div class="info-progress-fill" style="width:36.4%;"></div></div>
+      </div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🚜</div>
+      <div class="info-stat-val">2.8 <span>тн</span></div>
+      <div class="info-stat-lbl">Аюулгүйн Тэжээлийн Нөөц (9.3%)</div>
+      <div class="info-progress-box">
+        <div class="info-progress-bar"><div class="info-progress-fill gold" style="width:9.3%;"></div></div>
+      </div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">📦</div>
+      <div class="info-stat-val">215.2%</div>
+      <div class="info-stat-lbl">Малчдын Гар Дээрх Тэжээл</div>
+      <div style="margin-top:8px;"><span class="info-badge info-badge-success">✅ ДААЛГАВАР ИҮ ХЭРЭГЖСЭН</span></div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🐑</div>
+      <div class="info-stat-val">90 <span>өрх</span></div>
+      <div class="info-stat-lbl">Отор Нүүдэл (17.6 мянган мал)</div>
+      <div style="margin-top:8px;"><span class="info-badge info-badge-info">📍 БАЯНДЭЛГЭР, СҮХБААТАР, ӨНДӨРШИЛ</span></div>
+    </div>
+  </div>
+
+
+  <!-- HAA Slide 2 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Сумын ХАА-н Салбарын Бэлтгэл Хангах Ажлын Талаарх Мэдээлэл</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>“Хөдөө аж ахуй, хүнсний салбарын 2026-2027 оны өвөлжилт, хаваржилтын бэлтгэлийг хангах зарим арга хэмжээний тухай” Монгол улсын Засгийн газрын 2026 оны 286 дугаар тогтоол, “Мал аж ахуйн салбарын 2026-2027 оны өвөлжилт, хаваржилтын бэлтгэл хангах зарим арга хэмжээний тухай” аймгийн Засаг даргын 2026 оны 05 дугаар албан даалгаврын хэрэгжилтийг хангах, өвөл, хаврын улиралд үүсэж болзошгүй гамшиг, эрсдэлээс урьдчилан сэргийлэх, бэлтгэл бэлэн байдлыг хангах зорилгоор <strong>“Сумын ХАА-н салбарын 2026-2027 оны өвөлжилт, хаваржилтын бэлтгэл хангах ажлын төлөвлөгөө”</strong>-г боловсруулан сумын Засаг даргаар батлуулан, хэрэгжилтийг ханган ажиллаж байна.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image14.png')">
+          <img src="images/image14.png" alt="ХАА Слайд 2">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 3 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Бэлчээрийн Даацыг Тодорхойлох (Фотомониторинг)</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Сумын нутаг дэвсгэрийн бэлчээрийн төлөв байдал, чанарын өөрчлөлтийн явцыг хангах, урьдчилан сэргийлэх, ашиглалтыг тохируулах, үнэлэлт, дүгнэлт өгөх, нэгдсэн мэдээллийн санг баяжуулах чиг үүрэг бүхий бэлчээрийн фотомониторингийн хээрийн судалгааны ажлыг сумын Засаг даргын 2024 оны А/197 дугаар захирамжаар байгуулсан ажлын хэсэг <strong>2026.07.31-2026.08.01-ний хугацаанд</strong> тогтоосон цэгүүдэд газар дээр нь хэмжилт судалгааны ажлуудыг хийж гүйцэтгэсэн, тайлан дүгнэлт боловсруулах ажил явагдаж байна.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image15.png')">
+          <img src="images/image15.png" alt="ХАА Слайд 3">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/image16.png')">
+          <img src="images/image16.png" alt="ХАА Слайд 3">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 4 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Сумын Өвс, Тэжээлийн Нөөцийн Мэдээ (/2026.08.01-ний байдлаар/)</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>2026 оны 08 дугаар сарын 01-ний байдлаар сумын аюулгүйн нөөц болон малчдын түвшинд бэлтгэх өвс, тэжээлийн нөөцийн мэдээллийг иж бүрэн нэгтгэн гаргасан.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image17.png')">
+          <img src="images/image17.png" alt="ХАА Слайд 4">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 5 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Малын Отор Нүүдлийн Судалгаа</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li><strong>Өөрийн аймгийн бусад сумдын нутагт:</strong> Судалгаагаар нийт <strong>81 өрхийн 14,5 мянган</strong> толгой мал өвөлжиж, хаваржихаар байна.</li>
+          <li><strong>Бусад аймгийн нутагт (Сүхбаатар, Дундговь аймгийн Баяндэлгэр, Сүхбаатар, Өндөршил сумдад):</strong> Нийт <strong>9 өрхийн 3,1 мянган</strong> толгой мал өвөлжиж, хаваржихаар байна.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image18.png')">
+          <img src="images/image18.png" alt="ХАА Слайд 5">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 6 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Малчдын Түвшинд Мал, Мах Бэлтгэх Урьдчилсан Судалгаа</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Малчдын түвшинд өвөлжилт, хаваржилтад зориулан бэлтгэх болон зах зээлд нийлүүлэх мал, махны урьдчилсан судалгааг баг бүрээр нэгтгэв.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image19.png')">
+          <img src="images/image19.png" alt="ХАА Слайд 6">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 7 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Хашаа, Хорооны Хангамж</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Малын хашаа хорооны бэлэн байдал, засвар тохижилт, нөмөр саравчны хүрэлцээнд хийсэн судалгааны нэгтгэл.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image20.png')">
+          <img src="images/image20.png" alt="ХАА Слайд 7">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 8 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Малчдын Гар Дээр Бэлтгэсэн, Бэлтгэх Өвс, Тэжээлийн Нөөц</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Аймгийн Засаг даргын 2026 оны 05 дугаар албан даалгавраар малчдын түвшинд бэлтгэх өвс, тэжээлийн хэмжээ болон гүйцэтгэлийн байдал:</p>
+        <div class="data-box">
+          <ul>
+            <li><strong>Өвс бэлтгэх даалгавар:</strong> 454 тн → <span class="info-badge info-badge-warning">⚡ Гүйцэтгэл: 60.0%</span><div class="info-progress-box"><div class="info-progress-bar"><div class="info-progress-fill gold" style="width:60%;"></div></div></div></li>
+            <li><strong>Тэжээл бэлтгэх даалгавар:</strong> 227 тн → <span class="info-badge info-badge-success">🚀 Гүйцэтгэл: 215.2% (Биелэлт нэн өндөр)</span><div class="info-progress-box"><div class="info-progress-bar"><div class="info-progress-fill" style="width:100%;"></div></div></div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image21.png')">
+          <img src="images/image21.png" alt="ХАА Слайд 8">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 9 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Урьдчилан Сэргийлэх Дархлаажуулалт & Халдваргүйжүүлэлт</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Урьдчилан сэргийлэх дархлаажуулалт, мал амьтны шимэгчтэх өвчнөөс эмчлэн сэргийлэх, малын халдварт өвчнөөс урьдчилан сэргийлэх халдваргүйжүүлэлтийн арга хэмжээний хүрээнд хийгдэх ажлууд.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image22.png')">
+          <img src="images/image22.png" alt="ХАА Слайд 9">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/image23.png')">
+          <img src="images/image23.png" alt="ХАА Слайд 9">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/image24.png')">
+          <img src="images/image24.png" alt="ХАА Слайд 9">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 10 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Мал, Амьтны Шимэгчтэх Өвчнөөс Эмчлэн Сэргийлэх Арга Хэмжээ</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li>🚿 <strong>Угаалга:</strong> 16,252 мал → <strong>10,518 хамруулсан</strong> <span class="info-badge info-badge-info">64.7%</span><div class="info-progress-box"><div class="info-progress-bar"><div class="info-progress-fill" style="width:64.7%;"></div></div></div></li>
+          <li>💊 <strong>Туулгалт:</strong> 14,600 мал → <strong>7,078 хамруулсан</strong> <span class="info-badge info-badge-warning">48.5%</span><div class="info-progress-box"><div class="info-progress-bar"><div class="info-progress-fill gold" style="width:48.5%;"></div></div></div></li>
+          <li>🔬 <strong>Боловсруулалт:</strong> 22,000 мал → <strong>13,918 хамруулсан</strong> <span class="info-badge info-badge-info">63.2%</span><div class="info-progress-box"><div class="info-progress-bar"><div class="info-progress-fill" style="width:63.2%;"></div></div></div></li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image25.png')">
+          <img src="images/image25.png" alt="ХАА Слайд 10">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/image26.png')">
+          <img src="images/image26.png" alt="ХАА Слайд 10">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 11 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Хүнсний Гол Нэрийн Бүтээгдэхүүний Нөөц ба Гэрээ</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>ХХААХҮЯ-ны <a href="http://foodsupply.mofa.gov.mn/" target="_blank" style="color:#64b5f6;">foodsupply.mofa.gov.mn</a> программд сумын хүнсний гол нэрийн бүтээгдэхүүний нөөцийн мэдээг 7 хоног бүр гаргаж байна. Хүнсний бүтээгдэхүүний хомсдол үүссэн эрсдэл гараагүй, нөөцийн хэмжээ тогтмол байна.</p>
+        <div class="data-box">
+          <strong>Гэрээт ААН:</strong> 13 ААН-тэй болзошгүй эрсдлийн үед хүнсний бүтээгдэхүүн, бараа материалын нөөцийг бүрдүүлэх <strong>“Хамтран ажиллах гэрээ”</strong>-г 2 жилийн хугацаатай байгуулсан.
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image27.png')">
+          <img src="images/image27.png" alt="ХАА Слайд 11">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAA Slide 12 -->
+  <div class="slide-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Цаашид Анхаарах Асуудлууд</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>БАА-аас ирүүлсэн малчдын түвшинд бэлтгэсэн, бэлтгэх өвс, тэжээлийн нөөцийн судалгаанаас харахад аймгийн Засаг даргын 2026 оны 05 дугаар албан даалгаврын 2 дугаар хавсралтаар баталсан <strong>“МАЛЧДЫН ТҮВШИНД БЭЛТГЭХ”</strong> өвсны нөөцийн хэмжээнд хүрэхгүй байна. Албан даалгавраар малчдын түвшинд сумын хэмжээнд нийт 454 тн өвс бэлтгэх ёстойгоос судалгаагаар 270,6 тн бэлтгэхээр байгаа нь <strong>60 хувьтай</strong> байна.</p>
+        <div class="data-box" style="border-color:rgba(229,57,53,0.5);">
+          <strong>Шаардлагатай ажил:</strong> Багийн Засаг дарга нар малчдын түвшинд бэлтгэвэл зохих өвсний хэмжээг нэмэгдүүлэх, өвөлжилт, хаваржилтын цаг агаарын мэдээ, цаг агаарын гамшигт үзэгдлийн талаарх урьдчилан сэргийлэх мэдээг иргэд, малчдад тогтмол хүргэх, өвөлжилт, хаваржилтын бэлтгэл хангах тал дээр анхаарах шаардлагатай.
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/image28.png')">
+          <img src="images/image28.png" alt="ХАА Слайд 12">
+          </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════
+     PART 2: ЗАХИРАГЧИЙН АЖЛЫН АЛБА - ЗАА (14 SLIDES)
+═══════════════════════════════════ -->
+<div class="part-divider">
+  <div style="font-size:2.8rem;margin-bottom:12px;">🏙️</div>
+  <h2 style="font-size:2rem;font-weight:900;color:#ffd54f;margin-bottom:10px;">2-Р ХЭСЭГ: ЗАХИРАГЧИЙН АЖЛЫН АЛБА (ЗАА)</h2>
+  </div>
+
+<section id="part-zaa">
+  <h2 class="section-title reveal-title">ЗАХИРАГЧИЙН АЖЛЫН АЛБА</h2>
+
+  <!-- ZAA Infographic Dashboard Overview -->
+  <div class="info-dashboard">
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🏭</div>
+      <div class="info-stat-val">5.28 <span>тэрбум ₮</span></div>
+      <div class="info-stat-lbl">3-р Зуухны Өргөтгөл (Явц 40%)</div>
+      <div class="info-progress-box">
+        <div class="info-progress-bar"><div class="info-progress-fill gold" style="width:40%;"></div></div>
+      </div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🔧</div>
+      <div class="info-stat-val">100%</div>
+      <div class="info-stat-lbl">БАҮ 3-р Ангийн Шугамын Засвар</div>
+      <div style="margin-top:8px;"><span class="info-badge info-badge-success">✅ 150 сая ₮ + 60 сая ₮</span></div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🏫</div>
+      <div class="info-stat-val">95%</div>
+      <div class="info-stat-lbl">Сургууль, Цэцэрлэгийн Засвар</div>
+      <div class="info-progress-box">
+        <div class="info-progress-bar"><div class="info-progress-fill" style="width:95%;"></div></div>
+      </div>
+    </div>
+
+    <div class="info-stat-card">
+      <div class="info-stat-icon">🚚</div>
+      <div class="info-stat-val">69,350 <span>тн</span></div>
+      <div class="info-stat-lbl">Нүүрс Татан Авалтын Гэрээ</div>
+      <div style="margin-top:8px;"><span class="info-badge info-badge-info">🚛 ШИВЭЭ ОВОО ХК</span></div>
+    </div>
+  </div>
+
+
+  <!-- ZAA Slide 2 to 5 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Инженерийн Шугам Сүлжээ ба Нийтийн Аж Ахуйн Засвар</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Өвөлжилтийн бэлтгэл ажлыг хангах хүрээнд төв суурин газрын дулаан, цэвэр, бохир усны шугам сүлжээ, тоног төхөөрөмжийн засвар үйлчилгээний ажлуудыг шат дараатай хийж гүйцэтгэв.</p>
+        <ul>
+          <li>Дулаан хангамжийн шугам сүлжээний засвар, шинэчлэл.</li>
+          <li>Цэвэр бохир усны узель, насосны станцын бэлэн байдал.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image23.jpg')">
+          <img src="images/zaa_image23.jpg" alt="ЗАА Шугам сүлжээ">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 6 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Дулааны Станцын 3 Дугаар Зуухны Өргөтгөл Шинэчлэл</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Сайншанд сумын дулааны станцын 3 дугаар зуухны өргөтгөл шинэчлэлтийн ажил:</p>
+        <div class="data-box">
+          <ul>
+            <li><strong>Төсөвт өртөг:</strong> УТ-ын 5,289,186,569 төгрөг</li>
+            <li><strong>Гүйцэтгэгч:</strong> “Энерготех сервис” ХХК</li>
+            <li><strong>Явц:</strong> Материал таталт 100%, буулгалтын ажил хийгдэн <strong>гүйцэтгэл 40%-тай</strong> байна.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image40.jpg')">
+          <img src="images/zaa_image40.jpg" alt="ЗАА Зуухны засвар">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/zaa_image41.jpg')">
+          <img src="images/zaa_image41.jpg" alt="ЗАА Зуухны засвар">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 7 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">БАҮ-ний 3-р Ангийн Их Засварын Ажлын Мэдээлэл</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li><strong>Сайншанд 3-р зуухны оруулгын шугамнаас ДХ-9 худаг хүртэл ерөнхий шугам татах их засвар:</strong> Төсөвт өртөг 150.0 сая ₮ — <strong>Гүйцэтгэл 100%</strong>.</li>
+          <li><strong>ДХ-5, ДХ-7 хүртэл дулааны шугамын засвар, шинэчлэлт:</strong> Төсөвт өртөг 60.0 сая ₮ — <strong>Гүйцэтгэл 100%</strong>.</li>
+          <li><strong>Сайншанд 1, 2, 3, 4-р зуухны цахилгаан тоног төхөөрөмжийн засвар:</strong> Төсөвт өртөг 4.3 сая ₮ — <strong>Гүйцэтгэл 65%</strong>.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image42.png')">
+          <img src="images/zaa_image42.png" alt="ЗАА БАҮ 3">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/zaa_image44.png')">
+          <img src="images/zaa_image44.png" alt="ЗАА БАҮ 3">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 8 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">1-р Зуухны БЗУИ-100 Тогоог Квр1.86 Тогоо Солих Ажил</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Сайншанд 1-р зуухны БЗУИ-100 тогоог Квр1.86 тогоо болгон солих ажил:</p>
+        <div class="data-box">
+          <ul>
+            <li><strong>Төсөвт өртөг:</strong> 85.0 сая төгрөг</li>
+            <li><strong>Явц:</strong> Бараа материал нийлүүлэх ажлын гүйцэтгэгч сонгон шалгаруулах тендер зарлагдсан.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image48.png')">
+          <img src="images/zaa_image48.png" alt="ЗАА Тогоо солих">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 9 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Өвөлжилтийн Нүүрс Татан Авалтын Мэдээлэл</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li><strong>БАҮ-ний 3 дугаар анги:</strong> 08 дугаар сарын 30-ны өдрөөс <strong>12,350 тн нүүрс</strong> татан авалт хийхээр “Шивээ овоо” ХК-тай гэрээ байгуулсан.</li>
+          <li><strong>“Чандмань Илч” ОНӨХХК:</strong> 09 дүгээр сарын 15-ны өдрөөс <strong>57,000 тн нүүрс</strong> татан авалт хийхээр “Шивээ овоо” ХК-тай гэрээ байгуулсан.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image50.jpg')">
+          <img src="images/zaa_image50.jpg" alt="ЗАА Нүүрс татан авалт">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 10: СӨХ БҮХ ХҮСНЭГТ -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Нийтийн Орон Сууцнууд ба СӨХ-дийн Мэдээллийн Хүснэгт</div>
+    </div>
+    <div class="slide-content" style="grid-template-columns:1fr;">
+      <div class="slide-full-text">
+        <p>Өвөлжилтийн бэлтгэл ажлыг хангах хүрээнд нийтийн орон сууцнуудын СӨХ-д хийгдэх засварын иж бүрэн судалгаа:</p>
+      </div>
+      <div class="table-wrap">
+        <table class="slide-table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>СӨХ-ийн нэр</th>
+              <th>Орон сууцны байршил</th>
+              <th>Төсөвт өртөг (мян.₮)</th>
+              <th>Тайбар / Засварын ажлын явц</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>“Далай шанд” СӨХ</td>
+              <td>2-р баг Эрх чөлөө 1 гудамжны 100-р байр (58 айл)</td>
+              <td>119,397.9</td>
+              <td>Зоорийн давхрын халаалт, цэвэр усны шугам шинэчлэлийг "Чандмань-Илч" ОНӨХХК хийж байна.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>“Далай шанд” СӨХ</td>
+              <td>2-р баг Эрх чөлөө 1 гудамжны 104-р байр (48 айл)</td>
+              <td>140,775.9</td>
+              <td>Зоорийн давхрын халаалт, цэвэр усны шугам шинэчлэлийг "Чандмань-Илч" ОНӨХХК хийж байна.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>“Гэгээ” СӨХ</td>
+              <td>3-р баг Залуучууд 2 гудамжны 209-р байр</td>
+              <td>-</td>
+              <td>Узелийн өрөөний дулааны шугамын бөмбөлгөн хаалтыг шинэчлэсэн.</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>“Дээдлэн баясах” СӨХ</td>
+              <td>2-р баг Энхтайван гудамж 113-р байр (60 айл)</td>
+              <td>289,847.1</td>
+              <td>Гадна фасад, дээвэр засварлах ажлыг 2027 оны төсөвт тусгахаар төлөвлөсөн.</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Эмнэлгийн байр СӨХ</td>
+              <td>2-р баг Дэнж 1 гудамж 118-р байр (27 айл)</td>
+              <td>124,265.7</td>
+              <td>Дээврийн засварын ажлыг 2027 оны төсөвт тусгахаар төлөвлөсөн.</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>“Шинэ зууны харш” СӨХ</td>
+              <td>1-р баг Ноёнхутагтын 121-р байр (60 айл)</td>
+              <td>359,633.7</td>
+              <td>Гадна фасад, дээврийн засварын ажлыг гүйцэтгэгчтэй шууд гэрээ байгуулахаар төлөвлөсөн.</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>“Номин” СӨХ</td>
+              <td>1-р баг Ноёнхутагтын 123-р байр (9 давхар)</td>
+              <td>314,623.5</td>
+              <td>Гадна фасадны засварыг 2027 оны төсөвт тусгахаар төлөвлөсөн. Узелийн магистрал шугам шинэчлэх зардлын тооцоо гаргаж байна.</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>“Ганзамчид” СӨХ</td>
+              <td>4-р баг Ганзамчид 1 гудамжны 123-р байр (70 айл)</td>
+              <td>82,729.1</td>
+              <td>Шугамын засварын ажлын зураг төсвийг шинэчлэх шаардлагатай.</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>“Ганзамчид” СӨХ</td>
+              <td>4-р баг Ганзамчид 1 гудамжны 125-р байр (60 айл)</td>
+              <td>92,559.2</td>
+              <td>Шугамын засварын ажлын зураг төсвийг шинэчлэх шаардлагатай.</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>“Ганзамчид” СӨХ</td>
+              <td>4-р баг Ганзамчид 1 гудамжны 123-р байр</td>
+              <td>2,873.5</td>
+              <td>Гадна фасадны нөхөөсийг “Дэлгэр баян хүлэг” ХХК 09 сард хийж гүйцэтгэнэ.</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>“Саруул хотхон” СӨХ</td>
+              <td>2-р баг Эрүүл мэнд 1 гудамжны 120-р байр</td>
+              <td>1,300.0</td>
+              <td>Гадна фасадны нөхөөсийг “Дэлгэр баян хүлэг” ХХК 09 сард хийж гүйцэтгэнэ.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 11 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Цэцэрлэг, Сургууль ба Орон Сууцны Засвар</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li><strong>Хүүхдийн 2 дугаар цэцэрлэгийн барилгын их засвар:</strong> ОНТ-ийн 1,120.0 сая ₮, “Цүн түрүү” ХХК — <strong>Гүйцэтгэл 95%</strong>.</li>
+          <li><strong>ЕБ-ын 2 дугаар сургуулийн дотор цэвэр, дулааны шугамын засвар:</strong> АЗД-ын нөөц хөрөнгө 487.0 сая ₮, “Чандмань Илч” ОНӨХХК — <strong>Гүйцэтгэл 95%</strong>.</li>
+          <li><strong>“Манай орц-2” орон сууцны хаалга засварлах ажил:</strong> 25 орон сууцны 67 хаалга засварласан, СОНХС-ийн 174.1 сая ₮, “Эйбол” ХХК — <strong>Гүйцэтгэл 100%</strong>.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image52.jpg')">
+          <img src="images/zaa_image52.jpg" alt="Цэцэрлэг засвар">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/zaa_image55.jpg')">
+          <img src="images/zaa_image55.jpg" alt="Сургууль засвар">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 12 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Өвөлжилтийн Бэлтгэл Бэлэн Байдлын Шалгалт</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p>Төв суурин газрын 2026-2027 оны өвөлжилтийн бэлтгэл бэлэн байдлыг шалгах ажлын удирдамжийн дагуу <strong>08 дугаар сарын 24-ний өдрөөс 08 дугаар сарын 28-ны өдрүүдэд</strong> холбогдох мэргэжлийн байгууллагуудтай хамтран ажиллана.</p>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image58.jpg')">
+          <img src="images/zaa_image58.jpg" alt="Шалгалтын удирдамж">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 13 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-header">
+      <div class="slide-title">Авто Зам Арчлалт, Нөхөөс ба Цас Хайлуулах Бодис</div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <ul>
+          <li><strong>Төвийн хатуу хучилттай авто замын засвар, нөхөөс:</strong> 780 м2 авто зам нөхөж, 2 байршилд 680 м2 өнгө хучилт хийсэн. Замын сангийн 519.4 сая ₮, “Дэлгэр баясах зам” ХХК — <strong>Гүйцэтгэл 89%</strong>.</li>
+          <li><strong>Хот доторх авто замын тэмдэглэгээ:</strong> 450 м2 тэмдэглэгээг 7.5 тн термопластик будаг, 0.75 тн гэрэл ойлгогчоор сэргээсэн. Тохижилт үйлчилгээний газар — <strong>Гүйцэтгэл 100%</strong>.</li>
+          <li><strong>Авто замын цас хайлуулах бодис:</strong> 7 тн нөөц бүрдүүлсэн, АЗД-ын дэмжлэг 15.3 сая ₮.</li>
+        </ul>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image61.png')">
+          <img src="images/zaa_image61.png" alt="Зам засвар">
+          </div>
+        <div class="slide-img-box" onclick="openModal('images/zaa_image63.png')">
+          <img src="images/zaa_image63.png" alt="Цас хайлуулах бодис">
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAA Slide 14 -->
+  <div class="slide-card zaa-card reveal-card">
+    <div class="slide-content">
+      <div class="slide-full-text">
+        <p><strong>САЙНШАНД СУМЫН ЗАСАГ ДАРГЫН ТАМГЫН ГАЗАР</strong></p>
+        <ul>
+          <li><strong>Утас:</strong> +(976) 70523737</li>
+          <li><strong>И-мэйл:</strong> sszdtg@gmail.com</li>
+          <li><strong>Вэбсайт:</strong> <a href="http://www.sainshand.do.gov.mn" target="_blank" style="color:#ffd54f;">www.sainshand.do.gov.mn</a></li>
+        </ul>
+        <div class="data-box" style="text-align:center;font-size:1.1rem;font-weight:bold;color:#ffd54f;">
+          АНХААРАЛ ХАНДУУЛСАНД БАЯРЛАЛАА!
+        </div>
+      </div>
+      <div class="slide-images-container">
+        <div class="slide-img-box" onclick="openModal('images/zaa_image66.jpeg')">
+          <img src="images/zaa_image66.jpeg" alt="Төгсгөл">
+          </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════
+     FOOTER
+═══════════════════════════════════ -->
+<footer>
+  <div style="font-size:1.1rem;font-weight:800;color:#90caf9;margin-bottom:6px;">Сайншанд сумын Засаг Даргын Тамгын Газар</div>
+  <a href="http://www.sainshand.do.gov.mn/" target="_blank">www.sainshand.do.gov.mn</a>
+</footer>
+
+<!-- ═══════════════════════════════════
+     LIGHTBOX MODAL
+═══════════════════════════════════ -->
+<div class="modal" id="imgModal" onclick="closeModal()">
+  <span class="modal-close">&times;</span>
+  <img class="modal-img" id="modalImg" src="" alt="Томруулсан зураг">
+</div>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT LOGIC
+═══════════════════════════════════ -->
+<script>
+/* ── PARTICLES BACKGROUND ── */
+(function(){
+  const canvas = document.getElementById('particles');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, pts=[];
+  const N=60;
+
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+  }
+  function rand(a,b){return Math.random()*(b-a)+a;}
+  function init(){
+    pts=[];
+    for(let i=0;i<N;i++){
+      pts.push({
+        x:rand(0,W), y:rand(0,H),
+        vx:rand(-.3,.3), vy:rand(-.3,.3),
+        r:rand(1,2.2),
+        o:rand(0.2,0.6)
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<N;i++){
+      for(let j=i+1;j<N;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(100,181,246,${0.15*(1-d/120)})`;
+          ctx.lineWidth=0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    pts.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(100,181,246,${p.o})`;
+      ctx.fill();
+    });
+  }
+  function move(){
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+    });
+  }
+  function loop(){
+    move(); draw();
+    requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize',()=>{resize();init();});
+  resize(); init(); loop();
+})();
+
+/* ── HERO SCORE ANIMATION ── */
+function animateHero(){
+  const circle = document.getElementById('scoreCircle');
+  const numEl  = document.getElementById('heroScore');
+  if(!circle || !numEl) return;
+  const circum = 2*Math.PI*90;
+  circle.style.strokeDasharray = circum;
+  circle.style.strokeDashoffset = circum;
+
+  let start=null;
+  const target=88, dur=2000;
+  function step(ts){
+    if(!start)start=ts;
+    const prog=Math.min((ts-start)/dur,1);
+    const ease=1-Math.pow(1-prog,3);
+    const val=Math.round(ease*target);
+    numEl.textContent=val+'%';
+    circle.style.strokeDashoffset = circum - (circum*(val/100));
+    if(prog<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+window.addEventListener('load', animateHero);
+
+/* ── INTERSECTION OBSERVER FOR SCROLL REVEAL ── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target;
+
+    if(el.classList.contains('reveal-label')||el.classList.contains('reveal-title')){
+      el.classList.add('visible'); io.unobserve(el); return;
+    }
+    el.classList.add('visible');
+    io.unobserve(el);
+  });
+},{threshold:0.15});
+
+document.querySelectorAll(
+  '.reveal-label,.reveal-title,.kpi-card,.slide-card'
+).forEach(el=>io.observe(el));
+
+/* ── NAV DOTS NAVIGATION ── */
+const sections=['hero','part-haa','part-zaa'];
+const dots=document.querySelectorAll('.nav-dot');
+dots.forEach((d,i)=>{
+  d.addEventListener('click',()=>{
+    const targetEl = document.getElementById(sections[i]);
+    if(targetEl) targetEl.scrollIntoView({behavior:'smooth'});
+  });
+});
+const secIO=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      const idx=sections.indexOf(id);
+      if(idx>=0){
+        dots.forEach(d=>d.classList.remove('active'));
+        if(dots[idx]) dots[idx].classList.add('active');
+      }
+    }
+  });
+},{threshold:0.3});
+sections.forEach(s=>{const el=document.getElementById(s);if(el)secIO.observe(el);});
+
+/* ── LIGHTBOX MODAL ── */
+function openModal(src){
+  const modal=document.getElementById('imgModal');
+  const img=document.getElementById('modalImg');
+  if(modal && img){
+    img.src=src;
+    modal.classList.add('active');
+  }
+}
+function closeModal(){
+  const modal=document.getElementById('imgModal');
+  if(modal) modal.classList.remove('active');
+}
+</script>
+</body>
+</html>
