@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 ОНЫ БОДЛОГО ТӨЛӨВЛӨЛТ, ХЭРЭГЖИЛТИЙН ТАЙЛАН — Сайншанд сум</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   RESET & CORE STYLES
+══════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0d2137;
+  --blue:#1565c0;
+  --sky:#1e88e5;
+  --teal:#00897b;
+  --gold:#ffd54f;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --green:#10b981;
+  --purple:#8b5cf6;
+  --bg:#07111e;
+  --card:rgba(15, 23, 42, 0.72);
+  --card-hover:rgba(30, 41, 59, 0.85);
+  --border:rgba(255,255,255,0.12);
+  --text:#f1f5f9;
+  --muted:#94a3b8;
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Montserrat','Segoe UI',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.65;
+}
+
+/* Background Blobs & Grid */
+.bg-blobs{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;overflow:hidden;
+}
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(95px);opacity:0.35;
+}
+.blob-1{
+  width:750px;height:750px;
+  background:radial-gradient(circle,rgba(21,101,192,0.4),transparent 70%);
+  top:-200px;left:-150px;
+  animation:bFloat1 24s ease-in-out infinite;
+}
+.blob-2{
+  width:650px;height:650px;
+  background:radial-gradient(circle,rgba(0,137,123,0.35),transparent 70%);
+  bottom:10%;right:-100px;
+  animation:bFloat2 28s ease-in-out infinite;
+}
+.blob-3{
+  width:550px;height:550px;
+  background:radial-gradient(circle,rgba(255,213,79,0.22),transparent 70%);
+  top:45%;left:40%;
+  animation:bFloat3 20s ease-in-out infinite;
+}
+@keyframes bFloat1{0%,100%{transform:translate(0,0);}50%{transform:translate(100px,50px);}}
+@keyframes bFloat2{0%,100%{transform:translate(0,0);}50%{transform:translate(-80px,-60px);}}
+@keyframes bFloat3{0%,100%{transform:translate(0,0);}50%{transform:translate(-60px,70px);}}
+
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:55px 55px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.35;}
+
+/* Navigation Bar */
+.top-nav {
+  position:sticky;top:0;z-index:100;
+  background:rgba(7, 17, 30, 0.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:12px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.nav-brand {
+  display:flex;align-items:center;gap:12px;
+  text-decoration:none;color:#fff;font-weight:800;font-size:0.95rem;
+}
+.nav-brand img {width:38px;height:38px;object-fit:contain;}
+.nav-filters {
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.nav-btn {
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.14);
+  color:#cbd5e1;padding:6px 14px;border-radius:20px;
+  font-size:0.78rem;font-weight:700;cursor:pointer;
+  transition:all 0.25s ease;
+  text-decoration:none;
+}
+.nav-btn:hover, .nav-btn.active {
+  background:#1e88e5;color:#fff;border-color:#64b5f6;
+  box-shadow:0 0 14px rgba(30,136,229,0.4);
+}
+
+/* ══════════════════════════════════
+   HERO SECTION
+══════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:60px 24px 50px;
+  overflow:hidden;z-index:1;
+}
+.hero-bg-photo{
+  position:absolute;inset:0;z-index:0;
+  background-image:url('images_policy/image5.jpeg');
+  background-size:cover;
+  background-position:center 40%;
+  animation:heroZoom 32s ease-in-out infinite alternate;
+}
+.hero-bg-photo::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(to bottom,
+      rgba(7,17,30,0.7) 0%,
+      rgba(7,17,30,0.5) 40%,
+      rgba(7,17,30,0.85) 75%,
+      rgba(7,17,30,1) 100%),
+    radial-gradient(ellipse at 50% 30%, rgba(21,101,192,0.45) 0%, transparent 75%);
+}
+@keyframes heroZoom{
+  from{transform:scale(1);}
+  to{transform:scale(1.08);}
+}
+.hero-logo{
+  width:115px;height:115px;
+  object-fit:contain;margin-bottom:18px;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.7));
+  position:relative;z-index:2;
+  animation:fadeDown 0.8s ease both;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(21,101,192,0.3);
+  border:1px solid rgba(100,181,246,0.45);
+  padding:7px 20px;border-radius:30px;
+  font-size:0.82rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:#90caf9;margin-bottom:18px;
+  position:relative;z-index:2;
+}
+.hero-title{
+  text-transform:uppercase;
+  font-size:clamp(1.9rem,4vw,3.3rem);
+  font-weight:900;line-height:1.2;
+  background:linear-gradient(135deg,#ffffff 0%,#90caf9 50%,#ffd54f 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:14px;position:relative;z-index:2;
+  max-width:1050px;letter-spacing:-0.5px;
+}
+.hero-subtitle{
+  font-size:clamp(0.95rem,1.8vw,1.2rem);
+  color:#cbd5e1;max-width:900px;margin-bottom:28px;
+  position:relative;z-index:2;font-weight:500;
+}
+.hero-subtitle span {color:var(--gold);font-weight:700;}
+
+/* Score Ring */
+.score-ring-wrap{
+  position:relative;width:200px;height:200px;
+  margin:10px auto 24px;z-index:2;
+}
+.score-ring-wrap svg{transform:rotate(-90deg);}
+.score-ring-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:12;}
+.score-ring-fill{
+  fill:none;stroke:url(#scoreGrad);stroke-width:12;
+  stroke-linecap:round;
+  stroke-dasharray:565;stroke-dashoffset:193; /* 65.8% */
+  transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1);
+}
+.score-inner{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-num{
+  font-size:2.9rem;font-weight:900;
+  background:linear-gradient(135deg,#fff,#ffd54f);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.score-label{
+  font-size:0.75rem;color:var(--muted);
+  font-weight:700;letter-spacing:1px;margin-top:6px;text-transform:uppercase;
+}
+
+/* Quick Contact Chips */
+.hero-contact-bar {
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+  margin-top:14px;position:relative;z-index:2;
+}
+.hero-contact-item {
+  background:rgba(15,23,42,0.65);
+  border:1px solid rgba(255,255,255,0.12);
+  padding:6px 16px;border-radius:24px;
+  font-size:0.8rem;color:#cbd5e1;
+  display:inline-flex;align-items:center;gap:8px;
+  backdrop-filter:blur(8px);
+}
+.hero-contact-item a {color:#90caf9;text-decoration:none;}
+.hero-contact-item a:hover {text-decoration:underline;}
+
+/* ══════════════════════════════════
+   SECTION WRAPPER & HEADERS
+══════════════════════════════════ */
+section{
+  position:relative;z-index:1;
+  padding:60px 24px;
+  max-width:1260px;margin:0 auto;
+}
+.section-header{
+  margin-bottom:36px;text-align:center;
+}
+.section-tag{
+  display:inline-block;
+  font-size:0.75rem;font-weight:800;letter-spacing:2.5px;
+  text-transform:uppercase;color:#64b5f6;margin-bottom:8px;
+}
+.section-title{
+  font-size:clamp(1.5rem,3vw,2.3rem);font-weight:900;
+  color:#fff;line-height:1.25;
+}
+.section-title span{
+  background:linear-gradient(135deg,#90caf9,#ffd54f);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* ══════════════════════════════════
+   INFOGRAPHIC KPI TILES
+══════════════════════════════════ */
+.kpi-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;margin-bottom:36px;
+}
+.kpi-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:22px;
+  backdrop-filter:blur(12px);
+  position:relative;overflow:hidden;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#3b82f6,#ffd54f);
+}
+.kpi-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,213,79,0.4);
+  background:var(--card-hover);
+  box-shadow:0 12px 32px rgba(0,0,0,0.35);
+}
+.kpi-icon{font-size:1.8rem;margin-bottom:8px;}
+.kpi-val{font-size:2.2rem;font-weight:900;color:#fff;line-height:1.1;}
+.kpi-val span{font-size:1.1rem;color:var(--gold);font-weight:700;}
+.kpi-label{
+  font-size:0.82rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.5px;margin-top:6px;
+}
+.kpi-sub{font-size:0.75rem;color:#64748b;margin-top:4px;}
+
+/* ══════════════════════════════════
+   TASK & POLICY ITEM CARDS
+══════════════════════════════════ */
+.task-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;margin-bottom:24px;
+  backdrop-filter:blur(12px);
+  transition:all 0.3s ease;
+}
+.task-card:hover{
+  border-color:rgba(255,255,255,0.24);
+  background:var(--card-hover);
+}
+.task-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;margin-bottom:16px;flex-wrap:wrap;
+  border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:14px;
+}
+.task-title-wrap{flex:1;min-width:280px;}
+.task-code{
+  display:inline-block;padding:3px 10px;border-radius:8px;
+  background:rgba(30,136,229,0.2);border:1px solid rgba(30,136,229,0.4);
+  color:#90caf9;font-weight:800;font-size:0.78rem;margin-bottom:6px;
+}
+.task-title{
+  font-size:1.2rem;font-weight:800;color:#fff;line-height:1.35;
+}
+.task-meta-category{
+  font-size:0.8rem;color:#ffd54f;font-weight:600;margin-top:4px;
+}
+
+/* Badges */
+.badge-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  font-size:0.82rem;font-weight:800;letter-spacing:0.4px;
+  white-space:nowrap;
+}
+.badge-100{background:rgba(16,185,129,0.18);color:#34d399;border:1px solid rgba(52,211,153,0.35);}
+.badge-high{background:rgba(59,130,246,0.18);color:#60a5fa;border:1px solid rgba(96,165,250,0.35);}
+.badge-mid{background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(251,191,36,0.35);}
+.badge-low{background:rgba(249,115,22,0.18);color:#fb923c;border:1px solid rgba(251,146,60,0.35);}
+.badge-zero{background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(248,113,113,0.35);}
+
+/* Progress Bars */
+.progress-wrap{margin:16px 0;}
+.progress-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:0.82rem;font-weight:700;margin-bottom:6px;
+}
+.progress-bar-bg{
+  width:100%;height:10px;
+  background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,#2563eb,#10b981);
+  transition:width 1s ease-in-out;
+}
+.progress-fill.gold{background:linear-gradient(90deg,#f59e0b,#ffd54f);}
+.progress-fill.orange{background:linear-gradient(90deg,#ea580c,#f97316);}
+.progress-fill.red{background:linear-gradient(90deg,#b91c1c,#ef4444);}
+
+/* Task Description & Action Boxes */
+.task-body{font-size:0.95rem;color:var(--text);line-height:1.75;}
+.task-action-box{
+  background:rgba(255,255,255,0.03);
+  border-left:4px solid #1e88e5;
+  border-radius:0 12px 12px 0;
+  padding:14px 18px;margin-top:12px;
+}
+.task-action-box.gold{border-left-color:#ffd54f;}
+.task-action-box.green{border-left-color:#10b981;}
+.task-action-box.purple{border-left-color:#8b5cf6;}
+.task-action-box strong{color:#ffd54f;}
+
+/* Nested Subtasks Grid */
+.subtasks-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:16px;margin-top:16px;
+}
+.subtask-card{
+  background:rgba(15,23,42,0.6);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;padding:16px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.subtask-num{
+  font-size:0.75rem;font-weight:800;color:#64b5f6;margin-bottom:4px;
+}
+.subtask-title{
+  font-size:0.92rem;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.4;
+}
+.subtask-desc{
+  font-size:0.86rem;color:#cbd5e1;margin-bottom:12px;line-height:1.6;
+}
+.subtask-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:auto;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.1);
+}
+
+/* ══════════════════════════════════
+   TIMELINE (Үүрэг даалгавар)
+══════════════════════════════════ */
+.timeline-wrap{
+  position:relative;max-width:980px;margin:30px auto;padding-left:36px;
+}
+.timeline-wrap::before{
+  content:'';position:absolute;left:14px;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,#3b82f6,#ffd54f,#10b981);
+  border-radius:3px;
+}
+.timeline-item{
+  position:relative;margin-bottom:28px;
+}
+.timeline-dot{
+  position:absolute;left:-36px;top:18px;width:18px;height:18px;
+  border-radius:50%;background:#1e88e5;
+  border:3px solid var(--bg);
+  box-shadow:0 0 10px rgba(30,136,229,0.8);
+}
+.timeline-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;padding:20px 24px;
+  backdrop-filter:blur(10px);
+}
+.timeline-date{
+  font-size:0.82rem;font-weight:800;color:#ffd54f;margin-bottom:6px;
+}
+.timeline-content{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+}
+
+/* ══════════════════════════════════
+   TABLES
+══════════════════════════════════ */
+.table-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  margin:24px 0;
+}
+.table-responsive{overflow-x:auto;}
+table.report-table{
+  width:100%;border-collapse:collapse;font-size:0.88rem;text-align:left;
+}
+table.report-table th{
+  background:rgba(21,101,192,0.35);color:#90caf9;
+  padding:14px 18px;font-weight:800;border-bottom:1px solid var(--border);
+}
+table.report-table td{
+  padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);
+  color:var(--text);vertical-align:middle;
+}
+table.report-table tr:hover{background:rgba(255,255,255,0.03);}
+
+/* Footer */
+footer{
+  background:rgba(6,15,26,0.95);
+  border-top:1px solid var(--border);
+  padding:60px 24px;text-align:center;
+  position:relative;z-index:1;
+}
+.footer-logo{width:80px;height:80px;object-fit:contain;margin-bottom:16px;}
+.footer-title{font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:8px;}
+.footer-thanks{
+  display:inline-block;
+  padding:10px 28px;margin:20px 0;
+  background:linear-gradient(135deg,rgba(21,101,192,0.25),rgba(255,213,79,0.18));
+  border:1px solid rgba(255,213,79,0.4);border-radius:30px;
+  font-size:1.1rem;font-weight:800;color:#ffd54f;
+  letter-spacing:1px;
+}
+.footer-links{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
+  font-size:0.88rem;color:var(--muted);margin-top:10px;
+}
+.footer-links a{color:#64b5f6;text-decoration:none;}
+.footer-links a:hover{text-decoration:underline;}
+
+/* Modal for full images */
+.modal{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.92);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal.active{display:flex;}
+.modal-img{max-width:92vw;max-height:88vh;border-radius:12px;}
+.modal-close{
+  position:absolute;top:24px;right:32px;font-size:2.5rem;color:#fff;
+  cursor:pointer;
+}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="bg-grid"></div>
+<canvas id="particles"></canvas>
+
+<!-- Top Sticky Navigation -->
+<nav class="top-nav">
+  <a href="#hero" class="nav-brand">
+    <img src="images/sainshand_logo.png" alt="Сүлд">
+    <span>САЙНШАНД · БОДЛОГЫН ТАЙЛАН 2026</span>
+  </a>
+  <div class="nav-filters">
+    <a href="#summary" class="nav-btn">📊 Үр Дүн</a>
+    <a href="#sec-local" class="nav-btn">🏙️ Орон нутгийн хөгжил (31)</a>
+    <a href="#sec-human" class="nav-btn">👥 Хүний хөгжил (6)</a>
+    <a href="#sec-economy" class="nav-btn">📈 Эдийн засаг (14)</a>
+    <a href="#sec-governance" class="nav-btn">⚖️ Засаглал (1)</a>
+    <a href="#sec-decrees" class="nav-btn">📜 Захирамж / Шийдвэр</a>
+    <a href="#sec-tasks" class="nav-btn">⏱️ Үүрэг даалгавар</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════
+     HERO SECTION (SLIDE 1)
+═══════════════════════════════════ -->
+<header id="hero" class="hero">
+  <div class="hero-bg-photo"></div>
+
+  <img src="images/sainshand_logo.png" alt="Сайншанд сумын сүлд" class="hero-logo">
+  <div class="hero-badge">Сайншанд сумын Засаг Даргын Тамгын Газар · Захирагчийн Ажлын Алба</div>
+
+  <h1 class="hero-title">2026 ОНЫ БОДЛОГО ТӨЛӨВЛӨЛТ, ХЭРЭГЖИЛТИЙН ТАЙЛАН</h1>
+  
+  <p class="hero-subtitle">
+    <span>“ТОГТВОРТОЙ БОДЛОГО ТАСРАЛТГҮЙ ХӨГЖИЛ”</span> — САЙНШАНД СУМЫН ЗАСАГ ДАРГЫН ҮЙЛ АЖИЛЛАГААНЫ ХӨТӨЛБӨР (2024-2028 ОНЫ ХЭРЭГЖИЛТ)
+  </p>
+
+  <!-- Overall Score Ring -->
+  <div class="score-ring-wrap">
+    <svg viewBox="0 0 200 200" width="200" height="200">
+      <defs>
+        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#1565c0"/>
+          <stop offset="100%" style="stop-color:#ffd54f"/>
+        </linearGradient>
+      </defs>
+      <circle class="score-ring-bg" cx="100" cy="100" r="90"/>
+      <circle class="score-ring-fill" cx="100" cy="100" r="90"/>
+    </svg>
+    <div class="score-inner">
+      <div class="score-num">65.8%</div>
+      <div class="score-label">ДУНДАЖ ХЭРЭГЖИЛТ</div>
+    </div>
+  </div>
+
+  <div class="hero-contact-bar">
+    <div class="hero-contact-item">🏢 <span>Thynk Unlimited / Захирагчийн ажлын алба</span></div>
+    <div class="hero-contact-item">✉️ <a href="mailto:Zaa@sainshand.gov.mn">Zaa@sainshand.gov.mn</a></div>
+    <div class="hero-contact-item">📞 <span>70522229</span></div>
+    <div class="hero-contact-item">📍 <span>Дорноговь, Сайншанд</span></div>
+    <div class="hero-contact-item">🌐 <a href="https://www.gov.mn/org/zaalbasainshand" target="_blank">gov.mn/org/zaalbasainshand</a></div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════
+     SECTION 1: НИЙТ ҮР ДҮНГИЙН ИНФОГРАФИК ДАШБОРД (SLIDE 2)
+═══════════════════════════════════ -->
+<section id="summary">
+  <div class="section-header">
+    <span class="section-tag">НЭГДСЭН СТАТИСТИК & БҮТЭЦ</span>
+    <h2 class="section-title">Хөтөлбөрийн Хэрэгжилтийн <span>Үр Дүнгийн Нэгтгэл</span></h2>
+  </div>
+
+  <!-- 4 Policy Pillars -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">🏙️</div>
+      <div class="kpi-val">31 <span>арга хэмжээ</span></div>
+      <div class="kpi-label">Орон Нутгийн Хөгжлийн Бодлого</div>
+      <div class="kpi-sub">Дэд бүтэц, дулаан, авто зам, хот төлөвлөлт</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-val">6 <span>арга хэмжээ</span></div>
+      <div class="kpi-label">Хүний Хөгжлийн Бодлого</div>
+      <div class="kpi-sub">Ахмад настан, хөгжлийн бэрхшээл, боловсрол, спорт</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-val">14 <span>арга хэмжээ</span></div>
+      <div class="kpi-label">Эдийн Засгийн Бодлого</div>
+      <div class="kpi-sub">Соёл урлаг, театр, экосистем, хог хаягдал, тэрбум мод</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">⚖️</div>
+      <div class="kpi-val">1 <span>арга хэмжээ</span></div>
+      <div class="kpi-label">Засаглалын Бодлого</div>
+      <div class="kpi-sub">Хүний эрхийг дээдэлсэн аюулгүй орчин, камержуулалт</div>
+    </div>
+  </div>
+
+  <!-- Execution Status Breakdown -->
+  <div class="kpi-grid">
+    <div class="kpi-card" style="border-left:4px solid #10b981;">
+      <div class="kpi-val" style="color:#34d399;">27</div>
+      <div class="kpi-label">Үр Дүнтэй (Бүрэн биелсэн)</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-fill" style="width:51.9%;"></div></div>
+      </div>
+      <div class="kpi-sub">Нийт арга хэмжээний 51.9%</div>
+    </div>
+    <div class="kpi-card" style="border-left:4px solid #3b82f6;">
+      <div class="kpi-val" style="color:#60a5fa;">6</div>
+      <div class="kpi-label">Үр Дүн Хүлээгдэж Байгаа</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-fill" style="width:11.5%;"></div></div>
+      </div>
+      <div class="kpi-sub">Нийт арга хэмжээний 11.5%</div>
+    </div>
+    <div class="kpi-card" style="border-left:4px solid #f59e0b;">
+      <div class="kpi-val" style="color:#fbbf24;">11</div>
+      <div class="kpi-label">Үр Дүн Хангалтгүй</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-fill gold" style="width:21.2%;"></div></div>
+      </div>
+      <div class="kpi-sub">Нийт арга хэмжээний 21.2%</div>
+    </div>
+    <div class="kpi-card" style="border-left:4px solid #ef4444;">
+      <div class="kpi-val" style="color:#f87171;">8</div>
+      <div class="kpi-label">Үр Дүн Гараагүй</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-fill red" style="width:15.4%;"></div></div>
+      </div>
+      <div class="kpi-sub">Нийт арга хэмжээний 15.4%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 2: ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО (SLIDES 3 - 12)
+═══════════════════════════════════ -->
+<section id="sec-local">
+  <div class="section-header">
+    <span class="section-tag">I БҮЛЭГ · 31 АРГА ХЭМЖЭЭ</span>
+    <h2 class="section-title">ОРОН НУТГИЙН <span>ХӨГЖЛИЙН БОДЛОГО</span></h2>
+  </div>
+
+  <!-- SLIDE 3: Эрчим хүч -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.2. Эрчим хүчний хангамжийн тогтвортой байдлыг сайжруулна</span>
+        <h3 class="task-title">1.2.1. Эрчим хүчний хүчин чадлыг сайжруулж, хүртээмжийг нэмэгдүүлнэ</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 73.3%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.2.1.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.2.1.1 ЗОРИЛТ</div>
+          <div class="subtask-title">“Цэвэр дулаан хангамжийн хөрөнгө оруулалтыг нэмэгдүүлж, эрчим хүчний шилжилтийг дэмжих” төслийн хүрээнд Сайншанд хотод 8-10МВт-ын нарны дулааны эх үүсвэрийг барих газрын асуудлыг шийдвэрлэнэ.</div>
+          <div class="subtask-desc">Сайншанд хотод 8-10 МВт-ын нарны дулааны эх үүсвэр барихаар аймгийн Засаг даргын 2025 оны А/644 дүгээр захирамжаар Сайншанд сумын 2, 3-р багийн нутаг дэвсгэрт дэд бүтцийн байгууллагын зориулалтаар <strong>10 га газрыг “Чандмань-Илч” ОНӨХХК-д эзэмшүүлсэн</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.2.1.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.2.1.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Сайншанд-Цагаан суварга чиглэлд цахилгаан дамжуулах агаарын шугам барих төслийг хэрэгжүүлэхэд дэмжиж газрын асуудлыг шийдвэрлэнэ.</div>
+          <div class="subtask-desc">220 кВ-ын 2 хэлхээ 190 км ЦДАШ, “Цагаан суварга” дэд станцын өргөтгөлийн төслийн байгаль орчин, нийгэмд нөлөөлөх байдлын үнэлгээний тайлан хийгдэж олон нийтэд танилцуулагдсан.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+
+      <!-- 1.2.1.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.2.1.3 ЗОРИЛТ</div>
+          <div class="subtask-title">Аймгийн төвийн дулааны станцын зуух, зарим сумдын халаалтын зууханд өргөтгөл шинэчлэлт хийж бага чадлын бүрэн автомат ажиллагаанд шилжүүлнэ.</div>
+          <div class="subtask-desc">Улсын төсвийн <strong>11,2 тэрбум төгрөгийн</strong> хөрөнгө оруулалтаар Дулааны станцын 2, 3, 4-р зуухны өргөтгөл, шинэчлэлтийн ажлыг <strong>“Энерготех сервис” ХХК</strong> хийж гүйцэтгэн 90%-тай үргэлжилж байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 90%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Төмөр зам & Логистик -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.3. Зам, тээвэр, харилцаа холбооны сүлжээг өргөжүүлнэ</span>
+        <h3 class="task-title">1.3.1. Салбарын хэмжээнд хэрэгжүүлж буй томоохон төслүүдийг дэмжинэ</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-mid">Дундаж явц: 48.3%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.3.1.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.3.1.1 ЗОРИЛТ</div>
+          <div class="subtask-title">Сайншанд, Зүүнбаян зангилааны өргөтгөл, шинэчлэлтийг дэмжиж ажиллана.</div>
+          <div class="subtask-desc">Зангилааны өргөтгөл, шинэчлэлтийн зураг төсвийг <strong>"Улаанбаатар төмөр зам" ХХН</strong> хариуцан гүйцэтгэж байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+
+      <!-- 1.3.1.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.3.1.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Сайншанд хотод ачаа тээврийн логистикийн төвийг байгуулна.</div>
+          <div class="subtask-desc">4-р багийн нутагт дэвсгэрт ачаа тээврийн логистикийн төвийг "Өү Эн И Март" ХХК-ийн ONEXPERESS төслийн хүрээнд <strong>"Женерал консалтинг констракшн" ХХК</strong> гүйцэтгэн, барилга угсралтын ажил 85%-тай үргэлжилж байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 85%</span>
+        </div>
+      </div>
+
+      <!-- 1.3.1.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.3.1.3 ЗОРИЛТ</div>
+          <div class="subtask-title">“Зүүнбаян-Баруун-Урт” хот чиглэлийн төмөр замыг барихад дэмжлэг үзүүлнэ.</div>
+          <div class="subtask-desc">“Монгол төмөр замын хөгжлийн стратеги – Зүүн Азийн төмөр замын нийгэмлэгийг үүсгэн байгуулахтай уялдуулах нь” төслийн хүрээнд Зүүнбаян–Баруун-Урт чиглэлийн төмөр замын <strong>ТЭЗҮ боловсруулагдсан</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Хот төлөвлөлт & Үерийн далан -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.5. Хот байгуулалтын баримт бичгийг бүсийн эдийн засагт гүйцэтгэх чиг үүрэгтэй уялдуулна</span>
+        <h3 class="task-title">1.5.1. Иргэд, олон нийтийн оролцоотой нэгдсэн төлөвлөлтийг бий болгоно</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-low">Явц: 15%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.5.1.1 - 1.5.1.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.5.1.1, 1.5.1.2, 1.5.1.3 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Сайншанд хотын ерөнхий төлөвлөгөөг шинэчлэх, гэр хорооллын дахин зохион байгуулалт, Зүүнбаян тосгоны хөгжлийн төлөвлөгөө боловсруулах</div>
+          <div class="subtask-desc">ОНТ-ын <strong>860,0 сая төгрөгийн</strong> хөрөнгө оруулалтаар хот хөгжлийн ерөнхий төлөвлөгөө шинэчлэн боловсруулах ажлын гүйцэтгэгч сонгон шалгаруулах тендерийг 2 удаа зарлаж, <strong>гүйцэтгэгч сонгон шалгараагүй байна</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-zero">Хэрэгжилт: 0%</span>
+        </div>
+      </div>
+
+      <!-- 1.5.1.4 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.5.1.4 ЗОРИЛТ</div>
+          <div class="subtask-title">Сайншанд хотын үерийн далан, ус зайлуулах сувгийг үе шаттай хийнэ.</div>
+          <div class="subtask-desc">АОНХС-н <strong>31,5 тэрбум төгрөгийн</strong> хөрөнгө оруулалтаар Сайншанд хотын 1, 4, 6 дугаар багт үерийн хамгаалалтын барилга байгууламжийн ажлыг <strong>“Энержи парагон” ХХК</strong> хийж гүйцэтгэн 30%-тай үргэлжилж байна. <em>(2026 онд санхүүжих: 5,3 тэрбум ₮)</em></div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Орон сууцжуулалт -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.6. Иргэдийн амьдрах орчин нөхцөлийг сайжруулна</span>
+        <h3 class="task-title">1.6.1. Өрх гэр бүлийн худалдан авах чадварт уялдуулсан орон сууцжуулах бодлогыг хэрэгжүүлнэ</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-100">Дундаж явц: 95%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.6.1.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.1.1 ЗОРИЛТ</div>
+          <div class="subtask-title">Түрээсийн орон сууц төслийг хэрэгжүүлнэ.</div>
+          <div class="subtask-desc">Нийт <strong>8 блок 612 айлын</strong> орон сууцны барилга угсралтын ажлын гүйцэтгэл 82%-ийн гүйцэтгэлтэй бөгөөд үүнээс <strong>144 айл орон сууц нь түрээсийн орон сууц ашиглалтад орсон</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.1.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.1.2 ЗОРИЛТ</div>
+          <div class="subtask-title">10000 айл хөтөлбөрийн хүрээнд “Мандах наран хороолол” болон амины орон сууцны төслийг хэрэгжүүлнэ.</div>
+          <div class="subtask-desc">Говийн төмөр замчин төслийн хүрээнд <strong>180 айлын 2 блок</strong> орон сууцны барилгыг <strong>“Жи Эй Эл Инвестмент” ХХК</strong> гүйцэтгэн 80%-тай үргэлжилж байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 90%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 & 8: НАА & Инженерийн дэд бүтэц -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.6.2. Нийтийн аж ахуй, инженерийн дэд бүтцийг сайжруулж, өргөтгөнө</span>
+        <h3 class="task-title">Инженерийн шугам сүлжээ, цэвэрлэх байгууламж, фасад засвар, халуун хүйтэн ус</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 62%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.6.2.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.2.1 ЗОРИЛТ</div>
+          <div class="subtask-title">Зүүнбаян тосгоны бохир ус ариутгах татуургын байгууламж барих</div>
+          <div class="subtask-desc">Зүүнбаян тосгоны 200 м3 цэвэрлэх байгууламжийн барилга угсралтын ажлын зураг төсвийг <strong>“Алтайн газрын хүч” ХХК</strong>-аар гүйцэтгүүлж, <strong>1,2 тэрбум төгрөгийн</strong> хөрөнгийн эх үүсвэр шийдвэрлэгдээгүй байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.2.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.2.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Шинэ суурьшлын бүсэд дэд бүтцийг барьж байгуулна.</div>
+          <div class="subtask-desc">
+            СОНХС-ийн 18,0 сая ₮ хөрөнгөөр 7-р багт 350 м ЦДАШ (“Рейзинг пауэр” ХХК).<br>
+            Өлзийт Нисэхийн шинэ суурьшилд авто зам, гэрэлтүүлэг, ус зайлуулах зураг төсвийг "Дээд угсаатан" ХХК хийж байна.<br>
+            10кВт-ын 961м, 0.4кВт-ын 8000м ЦДАШ, 400кВа КТПН <strong>538,6 сая ₮</strong> төсвийг 2027 оны жагсаалтад тусгасан.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 40%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.2.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.2.3 ЗОРИЛТ</div>
+          <div class="subtask-title">Нийтийн орон сууцны хуучин барилгын гадна фасад, дулаан алдагдал, шугам сүлжээний засвар</div>
+          <div class="subtask-desc">
+            ОНХС-ын <strong>705,0 сая ₮</strong>-өөр 8-р багийн 31, 32, 36-р байруудын фасад засвар (“Дэлгэр баян хүлэг" ХХК).<br>
+            2-р багийн 100, 104-р байрны зоорийн шугам сүлжээ шинэчлэлийг “Чандмань-Илч” ОНӨХХК 10%-тай гүйцэтгэж байна. 2027 онд 7 байрны зураг төсөв уламжилсан.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 50%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.2.4 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.2.4 ЗОРИЛТ</div>
+          <div class="subtask-title">Төв суурин газрын амины болон нийтийн орон сууцыг хэрэглээний халуун усны шугамд холбох</div>
+          <div class="subtask-desc">ОНТ-ийн хөрөнгөөр Мандах наран-7 хорооллын ф133-159-тэй <strong>3067 м хэрэглээний халуун усны шугамын угсралтын ажлыг</strong> "Чандмань-Илч" ОНӨХХК хийж гүйцэтгэн, <strong>байнгын ашиглалтад оруулсан</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.2.5 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.2.5 ЗОРИЛТ</div>
+          <div class="subtask-title">Гэр хорооллын цэвэр, бохир усны шугамыг нэмэгдүүлнэ.</div>
+          <div class="subtask-desc">
+            ОНХС-ын <strong>526,5 сая ₮</strong>-өөр 8-р багийн 4, 5, 6-р гудамжинд <strong>1345 м бохир ус татаж</strong> ашиглалтад оруулсан (“Эгнэгт өрнөх” ХХК).<br>
+            6-р багт 803 м (325,9 сая ₮), 8-р багт 520 м (300,0 сая ₮) бохирын зураг төсөл хийгдсэн.<br>
+            1-р багт 775 м цэвэр усны шугам (442,2 сая ₮) зураг төслийг "Смарт Хайдро" ХХК хийсэн.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 90%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Авто зам & Тээвэр -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.6.3. Иргэдийн аюулгүй зорчих нөхцөлийг сайжруулна</span>
+        <h3 class="task-title">Авто зам, нийтийн тээвэр, сурагчийн автобус, зогсоолууд</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-100">Дундаж явц: 97.1%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.6.3.1 & 1.6.3.4 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.3.1 & 1.6.3.4 ЗОРИЛТУУД</div>
+          <div class="subtask-title">“Сурагчийн автобус” нэвтрүүлэх & автобусны буудлууд шинэчлэх</div>
+          <div class="subtask-desc">”Сурагчийн автобус” хөтөлбөрийн хүрээнд <strong>4 нийтийн тээврийн хэрэгслээр</strong> давхардсан тоогоор <strong>5,865 сурагчдад</strong> үнэ төлбөргүй үйлчилсэн. Далай хөтлийн автозамыг 6-р багтай холбох хүрээнд <strong>2 ширхэг автобусны буудал</strong> шинээр байгуулсан.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.3.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.3.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Хатуу хучилттай авто зам шинээр барьж, сүлжээг нэмэгдүүлнэ.</div>
+          <div class="subtask-desc">Нийт замын сангийн <strong>6,1 тэрбум төгрөгийн</strong> хөрөнгөөр <strong>3,032 км авто зам</strong> шинээр ашиглалтад орсон.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 88.3%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.3.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.3.3 ЗОРИЛТ</div>
+          <div class="subtask-title">Авто зам, замын байгууламжид засвар шинэчлэлтийг үе шаттайгаар хийнэ.</div>
+          <div class="subtask-desc">АОНХС-ын <strong>3,2 тэрбум төгрөгийн</strong> хөрөнгө оруулалтаар 6 дугаар багийн Оффицерийн 80-н айлын 3-н замын уулзвараас Газрын тос боловсруулах үйлдвэрийн ажилчдын орон сууц хүртлэх <strong>2 км авто замын засвар шинэчлэлт</strong> болон нөхөөсийг <strong>“Дэлгэр баясах зам” ХХК</strong> гүйцэтгэсэн.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10, 11, 12: Тохижилт, Эко хот, "Манай орц", СӨХ -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">1.6.4. Иргэнд ээлтэй хотыг хөгжүүлнэ</span>
+        <h3 class="task-title">Garden City, гэрэлтүүлэг, тоглоомын талбай, ус түгээх байр, "Манай орц", СӨХ</h3>
+        <div class="task-meta-category">ОРОН НУТГИЙН ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 94.4%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 1.6.4.1 - 1.6.4.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.4.1 - 1.6.4.3 ЗОРИЛТУУД</div>
+          <div class="subtask-title">“Сайншанд-Garden city” ногоон хот хөтөлбөр, цэцэрлэгжүүлэлт</div>
+          <div class="subtask-desc">
+            Нийтийн талбай, авто зам дагуу 11 төрлийн <strong>2,110,621 ширхэг мод, бут, сөөг</strong> тарьсан.<br>
+            “Ургал орчин” НҮТББ-тай 13 км ногоон зурвас, Мандах наран хорооллын цэцэрлэгт хүрээлэнгийн зураг хийгдсэн.<br>
+            1 сарын аянд 8 багийн <strong>76 ААНБ идэвхтэй оролцсон</strong>.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 70% / 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.4.4 - 1.6.4.6 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.4.4 - 1.6.4.6 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Эко амины орон сууц, гэрэлтүүлэг, авто зогсоол, тоглоомын талбай</div>
+          <div class="subtask-desc">
+            6-р багт <strong>12 айлын эрчим хүчний хэмнэлттэй ногоон орон сууц</strong> 100% гүйцэтгэгдсэн (“Эибол” ХХК).<br>
+            Нийт <strong>357 гудамжны гэрэлтүүлэг, 9 цамхагт гэрэлтүүлэг</strong> шинээр суурилагдсан.<br>
+            4 худалдааны төвийн гадна <strong>1775 м2 авто зогсоол</strong>, 3 тоглоомын талбай шинэчлэгдэж, 2027 онд 8 талбайн зураг хийгдэж байна.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 1.6.4.7 - 1.6.4.9 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">1.6.4.7 - 1.6.4.9 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Автомат ус түгээх байр, "Манай орц" (Хаалга & Камер), 16 СӨХ-ийн бодлого</div>
+          <div class="subtask-desc">
+            ОНТ-ын <strong>530,0 сая ₮</strong>-өөр 1, 2, 3, 6-р багт цэвэршүүлсэн усны төв ашиглалтад орсон (“Баялаг говь” ХХК).<br>
+            <strong>Хаалга:</strong> Нийт 48 байрны <strong>122 хаалга засварлагдсан</strong> (СОНХС 314,8 сая ₮).<br>
+            <strong>Камер:</strong> Нийт 59 байрны 153 орцонд <strong>540 дотор камер, 140 гадна хяналтын камер</strong> суурилуулсан (1.02 тэрбум ₮). 2027 онд 27 байранд зураг хийгдсэн.<br>
+            <strong>СӨХ:</strong> 16 СӨХ-тэй “Гурван талт гэрээ” байгуулж төлбөр хураамжийг ус дулаантай хамтатгав.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 100% / 80%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 3: ХҮНИЙ ХӨГЖЛИЙН БОДЛОГО (SLIDES 13 - 17)
+═══════════════════════════════════ -->
+<section id="sec-human">
+  <div class="section-header">
+    <span class="section-tag">II БҮЛЭГ · 6 АРГА ХЭМЖЭЭ</span>
+    <h2 class="section-title">ХҮНИЙ <span>ХӨГЖЛИЙН БОДЛОГО</span></h2>
+  </div>
+
+  <!-- SLIDE 13, 14, 15: Ахмад, ХБИ, Залуучууд -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">2.3. Ахмад настан, хөгжлийн бэрхшээлтэй иргэн, залуучуудын хөгжил, оролцоог сайжруулна</span>
+        <h3 class="task-title">Ахмадын өргөө, ХБИ-ийн хөгжлийн төв ба жишиг гудамж, Залуучуудын спорт ордон</h3>
+        <div class="task-meta-category">ХҮНИЙ ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-mid">Явц: 40%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 2.3.1.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">2.3.1.1 ЗОРИЛТ</div>
+          <div class="subtask-title">“Ахмадын өргөө” байгуулна.</div>
+          <div class="subtask-desc">Ахмад настнуудын чөлөөт цагаа зөв боловсон өнгөрүүлэх, хөгжлийн оролцоог дэмжих зориулалттай тус арга хэмжээний биелэлт:</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-zero">Хэрэгжилт: 0%</span>
+        </div>
+      </div>
+
+      <!-- 2.3.2.1 & 2.3.2.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">2.3.2.1 & 2.3.2.2 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Хөгжлийн бэрхшээлтэй хүний төв & ээлтэй жишиг гудамж</div>
+          <div class="subtask-desc">
+            ХБИ төвийн барилгын зураг төсөв <strong>4,5 тэрбум төгрөгөөр</strong> хийгдэж, улсын төсөвт суулгах саналыг хүргүүлсэн (30%).<br>
+            “Дэлгэр говийн хүн сан” ТББ-ын дэмжлэгээр 1-р сургуулийн орчимд “Сургууль орчмын бүс” анивчдаг гэрэлт тоноглолтой жишиг гудамж бүрдүүлсэн (100%).
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 30% / 100%</span>
+        </div>
+      </div>
+
+      <!-- 2.3.3.8 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">2.3.3.8 ЗОРИЛТ</div>
+          <div class="subtask-title">Залуучуудын хөгжлийн спорт цогцолбор барина.</div>
+          <div class="subtask-desc">ОНТ-ийн <strong>194,0 сая төгрөгийн</strong> хөрөнгөөр Сайншанд суманд баригдах залуучуудын ордны ажлын зураг төсөл боловсруулах ажлыг <strong>“Криетив монголиа” ХХК</strong> хийж гүйцэтгэж байна.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16 & 17: Спорт цогцолбор, Сургууль, Цэцэрлэг -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">2.5 & 2.6. Спорт & Боловсролын орчныг сайжруулна</span>
+        <h3 class="task-title">Спорт цогцолборын их засвар, 7 цэцэрлэг, 1-р сургуулийн 320 хүүхдийн өргөтгөл, 2-р сургууль</h3>
+        <div class="task-meta-category">ХҮНИЙ ХӨГЖЛИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-100">Дундаж явц: 100%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 2.5.1.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">2.5.1.1 ЗОРИЛТ</div>
+          <div class="subtask-title">Спортын зориулалтын стандарт талбай, барилга байгууламжийг нэмэгдүүлнэ</div>
+          <div class="subtask-desc">2026 оны ОНТ-ийн <strong>367,8 сая төгрөгийн</strong> хөрөнгөөр Спорт цогцолборын дээвэр болон заалны шал засварлах ажлыг <strong>“Эибол” ХХК</strong> гүйцэтгэж <strong>100% ашиглалтад оруулсан</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+
+      <!-- 2.6.3.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">2.6.3.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Сургууль, цэцэрлэгийн барилга байгууламжид их засвар, шинэчлэлт хийх</div>
+          <div class="subtask-desc">
+            2025 онд <strong>2,9 тэрбум ₮</strong>-өөр хүүхдийн <strong>7 цэцэрлэгийн их засвар</strong> бүрэн хийгдсэн.<br>
+            2026 онд <strong>1,2 тэрбум ₮</strong>-өөр 2-р цэцэрлэгийн хүчитгэл, засвар дууссан (“Цүн түрү” ХХК).<br>
+            2026 онд <strong>9,1 тэрбум ₮</strong>-өөр 1-р сургуулийн <strong>320 хүүхдийн өргөтгөлийн барилга</strong> 45%-тай үргэлжилж байна (“Айсуй хөгжил” ХХК).<br>
+            АЗД нөөц хөрөнгөөр <strong>487,0 сая ₮</strong>-өөр 2-р сургуулийн дотор цэвэр, дулааны шугам засварлагдсан (“Чандмань илч” ОНӨХХК).
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 4: ЭДИЙН ЗАСГИЙН БОДЛОГО (SLIDES 18 - 22)
+═══════════════════════════════════ -->
+<section id="sec-economy">
+  <div class="section-header">
+    <span class="section-tag">III БҮЛЭГ · 14 АРГА ХЭМЖЭЭ</span>
+    <h2 class="section-title">ЭДИЙН ЗАСГИЙН <span>БОДЛОГО</span></h2>
+  </div>
+
+  <!-- SLIDE 18: Соёл урлаг & Саран хөхөө театр -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">3.6. Бүх нийтийг соён гэгээрүүлнэ</span>
+        <h3 class="task-title">3.6.2. Соёлын байгууллагуудын орчны стандарт, үйлчилгээний чанарыг сайжруулна</h3>
+        <div class="task-meta-category">ЭДИЙН ЗАСГИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 60%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 3.6.2.2 & 3.6.2.5 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.6.2.2 & 3.6.2.5 ЗОРИЛТУУД</div>
+          <div class="subtask-title">700 хүний суудалтай “Саран хөхөө” театрын барилгыг ашиглалтад оруулах</div>
+          <div class="subtask-desc">ОНТ-ын <strong>22,5 тэрбум төгрөгийн</strong> хөрөнгө оруулалтаар Сайншанд суманд баригдаж буй 700 хүний суудалтай Саран хөхөө театрын барилгын ажлыг <strong>“Болор аграмба” ХХК</strong> гүйцэтгэн <strong>85%-тай үргэлжилж байна</strong>.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 85%</span>
+        </div>
+      </div>
+
+      <!-- 3.6.2.3 & 3.6.2.4 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.6.2.3 & 3.6.2.4 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Аймгийн музей & Номын сангийн шинэ барилга барих</div>
+          <div class="subtask-desc">
+            Музей: “Балданс” ХХК-аас <strong>476,0 сая ₮</strong>-ийн зураг төсвийг 2027 оны төсөвт суулгах саналыг хүргүүлсэн (10%).<br>
+            Номын сан: “Зөв чиглэл” ХХК-аас <strong>150,0 сая ₮</strong>-ийн зураг төсвийн үнийн саналыг 2027 онд хүргүүлсэн (10%).
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-low">Хэрэгжилт: 10%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 19 & 20: Хог хаягдал & Хүлэмжийн хий, Карбон кредит -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">3.7. Экосистемийн тэнцвэрт байдлыг сайжруулна</span>
+        <h3 class="task-title">3.7.4. Хүлэмжийн хийн ялгарлыг бууруулж, хог хаягдлын менежментийг хэрэгжүүлэх</h3>
+        <div class="task-meta-category">ЭДИЙН ЗАСГИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 65%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 3.7.4.3 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.4.3 ЗОРИЛТ</div>
+          <div class="subtask-title">Хог хаягдлын менежментийн төлөвлөгөө боловсруулах</div>
+          <div class="subtask-desc">Сумын ЗД-ын А/179 Захирамжаар ажлын хэсэг байгуулж “Их говийн хөгжлийн гарц” ОНӨААТҮГ суурь судалгаа гаргасан. “Ногоон Хөгжлийн Хөтөч” ТББ-аас 95,0-150,0 сая ₮ үнийн санал ирүүлж, дээд байгууллагад уламжилсан.</div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 40%</span>
+        </div>
+      </div>
+
+      <!-- 3.7.4.4 & 3.7.4.5 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.4.4 & 3.7.4.5 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Хог хаягдлыг эдийн засгийн эргэлтэд оруулах & “Нүүдэлчин” шатаах зуух</div>
+          <div class="subtask-desc">
+            <strong>"Эко говь" ХХК:</strong> 34,9 тн дахивар хуванцраар сандал, хогийн сав, кольцо үйлдвэрлэв.<br>
+            <strong>"Омбол-Оюу ундарга" ХХК:</strong> 9,900 кг хаягдал цаасаар 139,000 ш өндөгний цаас үйлдвэрлэв.<br>
+            <strong>Шатаах зуух:</strong> ОНТ-ын 37,0 сая ₮-өөр хоногт 10 тн хүчин чадалтай “Нүүдэлчин” зуух төвлөрсөн хогийн цэгт суурилуулсан.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 90% / 100%</span>
+        </div>
+      </div>
+
+      <!-- 3.7.4.6 & 3.7.4.7 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.4.6 & 3.7.4.7 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Найрамдлын хур хог цэвэрлэх & “Карбон кредит” нэвтрүүлэх</div>
+          <div class="subtask-desc">
+            СИТХ-ын 09 дүгээр тогтоолоор Найрамдлын хур хог цэвэрлүүлэх <strong>267,6 га газрын байршил</strong> батлагдсан. ТХХТ-өөр 2,000 айлын хороолол байгуулах төсөлд тусган уламжилсан (30%).<br>
+            Карбон кредитийн судалгааны ажил хийгдэж байна (0%).
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-mid">Хэрэгжилт: 30% / 0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 21 & 22: Тэрбум мод үндэсний хөдөлгөөн & Ногоон байгууламж -->
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">3.7.5. Ногоон байгууламжийг нэмэгдүүлнэ</span>
+        <h3 class="task-title">“Тэрбум мод” үндэсний хөдөлгөөн, Усалгааны систем, Ойн анги, “Эко өрх”, “Нэг тонн баялаг-Нэг мод”</h3>
+        <div class="task-meta-category">ЭДИЙН ЗАСГИЙН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Дундаж явц: 66%</span>
+    </div>
+
+    <div class="subtasks-grid">
+      <!-- 3.7.5.1 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.5.1 ЗОРИЛТ</div>
+          <div class="subtask-title">Усалгааны системийн дэд бүтэц & Усны нөөцийн савууд</div>
+          <div class="subtask-desc">
+            Далай шанд хүрээлэнд 5,6 га талбайд <strong>50,0 сая ₮ өртөг бүхий гүний худаг</strong>, 60 тн усны сав, 11,400 м усалгааны систем (“Энержи парагон” ХХК).<br>
+            “Дорноговь-80” талбайд 10 тн усны сав 2 ш, Сайншанд-60 талбайд 1000 м усалгааны систем.<br>
+            БНХАУ-ын Консулын газрын 60,000 юанийн хандиваар Наадмын талбайн 5 га-д систем суурилуулж байна.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 70%</span>
+        </div>
+      </div>
+
+      <!-- 3.7.5.2 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.5.2 ЗОРИЛТ</div>
+          <div class="subtask-title">Мод тариалалтын үе шаттай статистик (2024-2026 он)</div>
+          <div class="subtask-desc">
+            <strong>2024 он:</strong> 3 байршилд 37 ААНБ, 307 иргэн ➔ <strong>15,296 мод</strong>.<br>
+            <strong>2025 он:</strong> 6 байршилд 70 ААНБ, 865 иргэн ➔ <strong>61,694 мод</strong>.<br>
+            <strong>2026 он:</strong> 7 байршилд 62 ААНБ, 1966 иргэн ➔ <strong>33,781 мод</strong>.<br>
+            <strong>336-р ангийн Агро экологийн төв:</strong> 60 га талбайд 11 төрлийн <strong>2,000,000 мод</strong> тариалсан.
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-high">Хэрэгжилт: 70%</span>
+        </div>
+      </div>
+
+      <!-- 3.7.5.3 - 3.7.5.5 -->
+      <div class="subtask-card">
+        <div>
+          <div class="subtask-num">3.7.5.3 - 3.7.5.5 ЗОРИЛТУУД</div>
+          <div class="subtask-title">Ойн анги, “Эко өрх-Эко байгууллага”, “Нэг тонн баялаг-Нэг мод”</div>
+          <div class="subtask-desc">
+            Ойн анги байгуулах судалгааны ажил явагдаж байна (0%).<br>
+            5,0 сая ₮-өөр ”Эко өрх-Эко байгууллага” шалгаруулж, 2025 онд 3 ААНБ, 10 иргэнийг урамшуулсан (90%).<br>
+            Зүүнбаянд “Доншен газрын тос” ХХК 40,0 сая ₮-өөр <strong>10,000 мод тарьж ургуулсан</strong> (100%).
+          </div>
+        </div>
+        <div class="subtask-footer">
+          <span class="badge-pill badge-100">Хэрэгжилт: 100% / 90%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 5: ХҮНИЙ ЭРХИЙГ ДЭЭДЭЛСЭН ЗАСАГЛАЛ (SLIDE 23)
+═══════════════════════════════════ -->
+<section id="sec-governance">
+  <div class="section-header">
+    <span class="section-tag">IV БҮЛЭГ · 1 АРГА ХЭМЖЭЭ</span>
+    <h2 class="section-title">ХҮНИЙ ЭРХИЙГ ДЭЭДЭЛСЭН <span>ЗАСАГЛАЛЫН БОДЛОГО</span></h2>
+  </div>
+
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title-wrap">
+        <span class="task-code">4.4. Гэмт хэрэг, зөрчлөөс урьдчилан сэргийлэх, илрүүлэх ажлыг сайжруулна</span>
+        <h3 class="task-title">4.4.2.1. Аюулгүй орчныг бий болгох камерын нэгдсэн системд нийтийн эзэмшлийн зам талбайн чиглэлийн камерыг холбох</h3>
+        <div class="task-meta-category">ХҮНИЙ ЭРХИЙГ ДЭЭДЭЛСЭН ЗАСАГЛАЛЫН БОДЛОГО</div>
+      </div>
+      <span class="badge-pill badge-high">Хэрэгжилт: 80%</span>
+    </div>
+    <div class="task-body">
+      <div class="task-action-box green">
+        <p>Сайншанд сумын ЗДТГ-ын гаднах <strong>3 хяналтын камер</strong>, төвийн 7 багийн ажлын албаны гаднах <strong>7 хяналтын камер</strong> нийт гадна талбайн <strong>10 хяналтын камер</strong> АЗДТГ-ын дэргэдэх телекамерын хяналтын дэд төвд холбогдохоор <strong>“Би Эй Лайят нетворкс” ХХК-тай 2026 оны 10 дугаар сарын 12-ны өдөр хүртэл гэрээ байгуулсан</strong>.</p>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta"><span>Гэрээний хэрэгжилт ба холболтын явц</span><span>80%</span></div>
+        <div class="progress-bar-bg"><div class="progress-fill" style="width:80%;"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 6: САЛБАРЫН ХУУЛЬ ТОГТООМЖ, ТОГТООЛ ШИЙДВЭР (SLIDES 24 - 25)
+═══════════════════════════════════ -->
+<section id="sec-decrees">
+  <div class="section-header">
+    <span class="section-tag">ТОГТООЛ, АЛБАН ДААЛГАВАР, ЗАХИРАМЖ</span>
+    <h2 class="section-title">Салбарын Хууль Тогтоомж, Тогтоол Шийдвэрийн <span>Хэрэгжилт & Үр Дүн</span></h2>
+  </div>
+
+  <!-- Table of Decrees & Directives -->
+  <div class="table-box">
+    <div class="table-responsive">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Төрөл / Баримт бичиг</th>
+            <th>Агуулга & Гүйцэтгэлийн дэлгэрэнгүй</th>
+            <th>Гүйцэтгэлийн үзүүлэлт</th>
+            <th>Үнэлгээ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Slide 24 -->
+          <tr>
+            <td><strong>Засгийн газрын 2026.03.25-ны 11-р тэмдэглэл</strong></td>
+            <td>Үүрэн холбооны сүлжээгүй 104 багийг холбоожуулах төлөвлөгөө боловсруулагдсан ба Сайншанд сумын төвийн багийн нутаг дэвсгэрийн хэмжээнд болон Зүүнбаян багт үүрэн холбооны сүлжээ бүрэн нэвтэрсэн.</td>
+            <td>Бүрэн сүлжээ нэвтэрсэн</td>
+            <td><span class="badge-pill badge-100">100%</span></td>
+          </tr>
+          <tr>
+            <td><strong>СИТХ-ын 2025.06.13-ны 06/04 тогтоол</strong></td>
+            <td>“Тэрбум мод” тарих үндэсний хөдөлгөөнийг хэрэгжүүлэх 2025-2028 онд хийх ажлын төлөвлөгөөг батлуулах. Жил бүрийн 4 дүгээр улиралд хэрэгжилтийг СИТХ-д хүргүүлэн ажиллаж байна.</td>
+            <td>Хэрэгжилтийг СИТХ-д тухай бүр хүргүүлсэн</td>
+            <td><span class="badge-pill badge-100">100%</span></td>
+          </tr>
+          <tr>
+            <td><strong>СИТХ-ын 2026.04.15-ны 05 тогтоол</strong></td>
+            <td>Энгийн хог хаягдлын үйлчилгээний хураамжийг шинэчлэн тогтоох тухай. Төлөвлөгөөт дүн: 167,6 сая ₮ ➔ 2026.08.31-ний байдлаар <strong>165,8 сая төгрөгийн орлого төвлөрүүлсэн</strong>.</td>
+            <td>98.9%-ийн биелэлттэй</td>
+            <td><span class="badge-pill badge-100">100%</span></td>
+          </tr>
+          <!-- Slide 25 -->
+          <tr>
+            <td><strong>Аймгийн Засаг даргын 01 албан даалгавар</strong></td>
+            <td>Гэмт хэрэг, зөрчлөөс урьдчилан сэргийлэх ажлыг эрчимжүүлэх тухай. Хяналтын камер, эргүүл, урьдчилан сэргийлэх арга хэмжээнүүдийг бүрэн хэрэгжүүлсэн.</td>
+            <td>Ажлууд бүрэн хэрэгжсэн</td>
+            <td><span class="badge-pill badge-100">100%</span></td>
+          </tr>
+          <tr>
+            <td><strong>Аймгийн Засаг даргын 04 албан даалгавар</strong></td>
+            <td>Хог хаягдал, орчны эрүүл ахуйн талаар авах зарим арга хэмжээний тухай. Нийтийн цэвэрлэгээ, хогийн цэгийн менежмент, устгал.</td>
+            <td>Биелэлт өндөр</td>
+            <td><span class="badge-pill badge-high">92.8%</span></td>
+          </tr>
+          <tr>
+            <td><strong>Аймгийн Засаг даргын 06 албан даалгавар</strong></td>
+            <td>Төв суурин газрын 2026-2027 оны өвөлжилт, хаваржилтын бэлтгэл хангах зарим арга хэмжээний тухай.</td>
+            <td>Биелэлт өндөр</td>
+            <td><span class="badge-pill badge-high">94.3%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Slide 26: Захирамжийн хэрэгжилт -->
+  <div class="kpi-grid" style="margin-top:28px;">
+    <div class="kpi-card" style="border-left:4px solid #10b981;">
+      <div class="kpi-val" style="color:#34d399;">100%</div>
+      <div class="kpi-label">Аймгийн Засаг даргын захирамж - 3</div>
+      <div class="kpi-sub" style="margin-top:8px;line-height:1.6;">
+        • Ажлын хэсэг байгуулах тухай (2) — <strong>100%</strong><br>
+        • “Өвөлжилтийн бэлтгэл хангуулах тухай” (1) — <strong>100%</strong>
+      </div>
+    </div>
+
+    <div class="kpi-card" style="border-left:4px solid #ffd54f;">
+      <div class="kpi-val" style="color:#ffd54f;">84.5%</div>
+      <div class="kpi-label">Сумын Засаг даргын захирамж - 11</div>
+      <div class="kpi-sub" style="margin-top:8px;line-height:1.6;">
+        • Дэмжлэг үзүүлэх — 1<br>
+        • Бүх нийтийн их цэвэрлэгээ зохион байгуулах — 2<br>
+        • Ногоон байгууламжийг нэмэгдүүлэх — 3<br>
+        • Ажлын хэсэг байгуулах — 5
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 7: УДИРДЛАГААС ӨГСӨН ҮҮРЭГ ЧИГЛЭЛИЙН ХЭРЭГЖИЛТ (SLIDE 27)
+═══════════════════════════════════ -->
+<section id="sec-tasks">
+  <div class="section-header">
+    <span class="section-tag">ЦАГ ХУГАЦААНЫ ЦУВАА</span>
+    <h2 class="section-title">Удирдлагаас Өгсөн Үүрэг Чиглэлийн <span>Хэрэгжилт (2026 он)</span></h2>
+  </div>
+
+  <div class="timeline-wrap">
+    <!-- 2026.03.10 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 03 дугаар сарын 10-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>3 үүрэг даалгавар</strong> өгөгдсөнөөс бүрэн биелсэн</span>
+          <span class="badge-pill badge-100">Хэрэгжилт 100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.03.16 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 03 дугаар сарын 16-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>2 үүрэг даалгавар</strong> өгөгдсөнөөс бүрэн биелсэн</span>
+          <span class="badge-pill badge-100">Хэрэгжилт 100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.03.30 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 03 дугаар сарын 30-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>7 үүрэг даалгавар</strong> өгөгдсөнөөс хэрэгжсэн байдал</span>
+          <span class="badge-pill badge-high">Хэрэгжилт 71.4%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.05.18 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 05 дугаар сарын 18-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>1 үүрэг даалгавар</strong> өгөгдсөнөөс хэрэгжсэн байдал</span>
+          <span class="badge-pill badge-high">Хэрэгжилт 80%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.08.17 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 08 дугаар сарын 17-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>8 үүрэг даалгавар</strong> өгөгдсөнөөс хэрэгжсэн байдал</span>
+          <span class="badge-pill badge-high">Хэрэгжилт 87.5%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.09.14 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 09 дүгээр сарын 14-ний өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>2 үүрэг даалгавар</strong> өгөгдсөнөөс бүрэн биелсэн</span>
+          <span class="badge-pill badge-100">Хэрэгжилт 100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026.09.28 -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="timeline-date">2026 оны 09 дүгээр сарын 28-ны өдрийн үүрэг чиглэл</div>
+        <div class="timeline-content">
+          <span><strong>3 үүрэг даалгавар</strong> өгөгдсөнөөс хэрэгжсэн байдал</span>
+          <span class="badge-pill badge-high">Хэрэгжилт 70%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     SECTION 8: ТӨГСГӨЛ & ХОЛБОО БАРИХ (SLIDE 28)
+═══════════════════════════════════ -->
+<footer>
+  <div style="max-width:1000px;margin:0 auto 30px;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+    <img src="images_policy/image25.jpeg" alt="Шөнийн Сайншанд (Gankhuyag Sandui)" style="width:100%;height:320px;object-fit:cover;display:block;">
+  </div>
+
+  <img src="images/sainshand_logo.png" alt="Сүлд" class="footer-logo">
+  <div class="footer-title">САЙНШАНД СУМЫН ЗАСАГ ДАРГЫН ТАМГЫН ГАЗАР</div>
+  <div style="color:var(--muted);font-size:0.95rem;">ЗАХИРАГЧИЙН АЖЛЫН АЛБА</div>
+
+  <div class="footer-thanks">АНХААРАЛ ХАНДУУЛСАНД БАЯРЛАЛАА!</div>
+
+  <div class="footer-links">
+    <div><strong>Утас:</strong> +(976) 70523737 &nbsp;|&nbsp; 70522229</div>
+    <div><strong>И-мэйл:</strong> <a href="mailto:sszdtg@gmail.com">sszdtg@gmail.com</a> &nbsp;|&nbsp; <a href="mailto:Zaa@sainshand.gov.mn">Zaa@sainshand.gov.mn</a></div>
+    <div><strong>Вэбсайт:</strong> <a href="http://www.sainshand.do.gov.mn" target="_blank">www.sainshand.do.gov.mn</a> &nbsp;|&nbsp; <a href="https://www.gov.mn/org/zaalbasainshand" target="_blank">gov.mn/org/zaalbasainshand</a></div>
+    <div><strong>Байршил:</strong> Дорноговь аймаг, Сайншанд сум</div>
+  </div>
+</footer>
+
+<!-- Lightbox Modal -->
+<div class="modal" id="imgModal" onclick="closeModal()">
+  <span class="modal-close">&times;</span>
+  <img class="modal-img" id="modalImg" src="" alt="Томруулсан зураг">
+</div>
+
+<script>
+/* ── PARTICLES BACKGROUND ── */
+(function(){
+  const canvas = document.getElementById('particles');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, pts = [];
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for(let i=0; i<45; i++){
+    pts.push({
+      x: Math.random()*window.innerWidth,
+      y: Math.random()*window.innerHeight,
+      r: Math.random()*2 + 1,
+      vx: (Math.random()-0.5)*0.35,
+      vy: (Math.random()-0.5)*0.35,
+      alpha: Math.random()*0.5 + 0.2
+    });
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0) p.x = w;
+      if(p.x > w) p.x = 0;
+      if(p.y < 0) p.y = h;
+      if(p.y > h) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(144, 202, 249, ' + p.alpha + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+function openModal(src){
+  const m = document.getElementById('imgModal');
+  const img = document.getElementById('modalImg');
+  if(m && img){
+    img.src = src;
+    m.classList.add('active');
+  }
+}
+function closeModal(){
+  const m = document.getElementById('imgModal');
+  if(m) m.classList.remove('active');
+}
+</script>
+
+</body>
+</html>
