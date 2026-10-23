@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>БАГИЙН АЖЛЫН АЛБАНЫ АЖЛЫН БАЙРНЫ ЗУРАГ АВАЛТЫН ТАЙЛАН — Сайншанд сум</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+  --bg-primary: #07111e;
+  --bg-secondary: #0d1e33;
+  --bg-card: rgba(15, 33, 56, 0.75);
+  --bg-card-hover: rgba(22, 47, 80, 0.85);
+  --border-color: rgba(56, 189, 248, 0.18);
+  --border-glow: rgba(56, 189, 248, 0.4);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-cyan: #00e5ff;
+  --accent-blue: #38bdf8;
+  --accent-royal: #2563eb;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-purple: #a855f7;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px rgba(56, 189, 248, 0.25);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 15px;
+}
+
+body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Background canvas and ambient blobs */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+.blob-1 { top: -10%; left: -5%; width: 550px; height: 550px; background: radial-gradient(circle, var(--accent-cyan), transparent); }
+.blob-2 { top: 35%; right: -10%; width: 650px; height: 650px; background: radial-gradient(circle, #6366f1, transparent); }
+.blob-3 { bottom: 5%; left: 15%; width: 600px; height: 600px; background: radial-gradient(circle, var(--accent-emerald), transparent); }
+
+/* Navigation Bar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7, 17, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 2rem;
+  transition: var(--transition);
+}
+
+.nav-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nav-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 229, 255, 0.35));
+}
+
+.brand-text h1 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-text p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: #fff;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--border-glow);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-report-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(0, 229, 255, 0.25));
+  border: 1px solid var(--accent-cyan);
+  border-radius: var(--radius-md);
+  color: var(--accent-cyan);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.btn-report-switcher:hover {
+  background: linear-gradient(135deg, var(--accent-royal), var(--accent-cyan));
+  color: #07111e;
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+}
+
+/* Main Container */
+.main-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem 2rem 5rem;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  padding: 3.5rem 2.5rem;
+  background: linear-gradient(135deg, rgba(13, 30, 51, 0.9) 0%, rgba(10, 22, 38, 0.95) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  margin-bottom: 3rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-royal), var(--accent-emerald), var(--accent-purple));
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.badge-cyan {
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+}
+
+.badge-blue {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.hero-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 30%, #b0e3ff 70%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 820px;
+  margin-bottom: 1.75rem;
+  font-weight: 400;
+}
+
+.hero-logos-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  background: rgba(15, 33, 56, 0.6);
+  padding: 1.5rem 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+}
+
+.hero-image-wrap {
+  position: relative;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-image-wrap:hover {
+  transform: scale(1.04);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+}
+
+.hero-image-wrap img {
+  max-height: 100px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Quick KPI Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-glow);
+  background: var(--bg-card-hover);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color, var(--accent-cyan)), transparent);
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent-color, var(--accent-cyan));
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.kpi-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpi-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+  font-feature-settings: "tnum";
+}
+
+.kpi-subtext {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Section Common Styling */
+.section-block {
+  margin-bottom: 3.5rem;
+  scroll-margin-top: 90px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-num {
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(56, 189, 248, 0.2);
+  font-feature-settings: "tnum";
+}
+
+.section-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.015em;
+}
+
+.section-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Grid Layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.grid-1-2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+.grid-2-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Modern Card */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+  position: relative;
+}
+
+.glass-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.card-title i {
+  color: var(--accent-cyan);
+}
+
+/* Highlight Quote / Directive Box */
+.directive-box {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(0, 229, 255, 0.08));
+  border-left: 4px solid var(--accent-cyan);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.directive-box strong {
+  color: var(--accent-cyan);
+}
+
+/* Clean Staff & Bag Buildings List */
+.staff-structure-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.staff-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.15rem;
+  background: rgba(13, 30, 51, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.staff-item:hover {
+  background: rgba(30, 58, 95, 0.6);
+  border-color: var(--border-glow);
+  transform: translateX(4px);
+}
+
+.staff-role {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.staff-role i {
+  color: var(--accent-cyan);
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.staff-count {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--accent-cyan);
+  background: rgba(0, 229, 255, 0.1);
+  padding: 0.2rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+/* Bag timeline grid */
+.bag-timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.bag-year-card {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  background: rgba(13, 30, 51, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.bag-year-card:hover {
+  border-color: var(--accent-emerald);
+  transform: translateY(-3px);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.bag-num {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.bag-year {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-emerald);
+}
+
+/* Charts Wrapper */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  margin-top: 0.75rem;
+}
+
+.chart-container.tall {
+  height: 380px;
+}
+
+/* Modern Data Table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+  min-width: 600px;
+}
+
+.custom-table th {
+  background: rgba(13, 30, 51, 0.95);
+  color: var(--accent-cyan);
+  font-weight: 700;
+  padding: 0.85rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.custom-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+}
+
+.custom-table tr:hover td {
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.custom-table tr:last-child td {
+  border-bottom: none;
+}
+
+.time-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-cyan);
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: monospace;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  white-space: nowrap;
+}
+
+.duration-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-emerald);
+  font-weight: 700;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-danger {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--accent-rose);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* Tabs for Role Timetables */
+.timetable-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: rgba(13, 30, 51, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  color: #fff;
+  border-color: var(--border-glow);
+  background: rgba(30, 58, 95, 0.8);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-royal), #0284c7);
+  color: #fff;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Survey Agencies Pill Grid */
+.agency-pill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.agency-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(13, 30, 51, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.agency-pill:hover {
+  background: rgba(30, 58, 95, 0.6);
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+}
+
+.agency-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.agency-count {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--accent-cyan);
+  background: rgba(0, 229, 255, 0.12);
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+/* Satisfaction Cards */
+.satisfaction-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.eval-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+}
+
+.eval-card.good {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.eval-card.poor {
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.eval-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.eval-card.good .eval-title { color: var(--accent-emerald); }
+.eval-card.poor .eval-title { color: var(--accent-rose); }
+
+.eval-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.eval-list li {
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eval-list li i {
+  font-size: 0.75rem;
+}
+.eval-card.good li i { color: var(--accent-emerald); }
+.eval-card.poor li i { color: var(--accent-rose); }
+
+/* Recommendation Cards */
+.proposal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.proposal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  transition: var(--transition);
+}
+
+.proposal-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cyan);
+  background: var(--bg-card-hover);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.proposal-num {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-royal), var(--accent-cyan));
+  color: #07111e;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.35);
+}
+
+.proposal-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.proposal-content p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(7, 17, 30, 0.94);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+
+.lightbox-modal.active {
+  display: flex;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.lightbox-close:hover {
+  color: var(--accent-cyan);
+  transform: rotate(90deg);
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--border-color);
+  background: rgba(7, 17, 30, 0.95);
+  padding: 3rem 2rem 2rem;
+  margin-top: 4rem;
+}
+
+.footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-copy {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-1-2, .grid-2-1, .satisfaction-box { grid-template-columns: 1fr; }
+  .hero-title { font-size: 2rem; }
+  .nav-menu { display: none; }
+}
+
+@media (max-width: 640px) {
+  .main-wrapper { padding: 1.25rem 1rem 3rem; }
+  .hero-section { padding: 2rem 1.25rem; }
+  .hero-title { font-size: 1.7rem; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .proposal-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="ambient-blob blob-1"></div>
+<div class="ambient-blob blob-2"></div>
+<div class="ambient-blob blob-3"></div>
+
+<!-- Top Sticky Navbar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#hero" class="nav-brand">
+      <img src="images/sainshand_logo.png" onerror="this.src='images_zurag_avalt/image1.png'" alt="Сайншанд сум" class="nav-logo">
+      <div class="brand-text">
+        <h1>САЙНШАНД СУМЫН ЗДТГ</h1>
+        <p>Багийн ажлын албаны ажлын байрны зураг авалтын тайлан</p>
+      </div>
+    </a>
+
+    <ul class="nav-menu">
+      <li><a href="#summary" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Товч дүгнэлт</a></li>
+      <li><a href="#structure" class="nav-link"><i class="fa-solid fa-sitemap"></i> Бүтэц & Багууд</a></li>
+      <li><a href="#turnover" class="nav-link"><i class="fa-solid fa-user-gear"></i> Хүний нөөц</a></li>
+      <li><a href="#timetables" class="nav-link"><i class="fa-solid fa-clock"></i> Ажлын зураглал</a></li>
+      <li><a href="#citizen-satisfaction" class="nav-link"><i class="fa-solid fa-users"></i> Иргэдийн оролцоо</a></li>
+      <li><a href="#salary" class="nav-link"><i class="fa-solid fa-coins"></i> Цалин хөлс</a></li>
+      <li><a href="#proposals" class="nav-link"><i class="fa-solid fa-lightbulb"></i> Санал, зөвлөмж</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="index.html" class="btn-report-switcher" title="Бодлого төлөвлөлтийн нэгдсэн тайлан руу шилжих">
+        <i class="fa-solid fa-arrow-left"></i> Бодлогын тайлан
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content Wrapper -->
+<div class="main-wrapper">
+
+  <!-- HERO SECTION -->
+  <header id="hero" class="hero-section">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge-row">
+          <span class="badge badge-cyan"><i class="fa-solid fa-award"></i> Албан ёсны тайлан</span>
+          <span class="badge badge-blue"><i class="fa-solid fa-file-signature"></i> Захирамж А/51</span>
+          <span class="badge badge-emerald"><i class="fa-solid fa-check-double"></i> 56 Журмын хэрэгжилт: 98%</span>
+        </div>
+        <h1 class="hero-title">БАГИЙН АЖЛЫН АЛБАНЫ АЖЛЫН БАЙРНЫ ЗУРАГ АВАЛТЫН ТАЙЛАН</h1>
+        <p class="hero-subtitle">
+          Монгол Улсын Засаг захиргаа, нутаг дэвсгэрийн нэгж, түүний удирдлагын тухай хууль, Засгийн газрын 2018 оны 22 дугаар тогтоолыг удирдлага болгон Сайншанд сумын 8 багийн ажлын албаны бодит ачаалал, үйл ажиллагааны зураглал, хүний нөөцийн эргэлт, хууль эрх зүйн чиг үүргийн хэрэгжилтийг үнэлсэн тайлан.
+        </p>
+      </div>
+
+      <div class="hero-logos-box">
+        <div class="hero-image-wrap" onclick="openLightbox('images_zurag_avalt/image2.png')">
+          <img src="images_zurag_avalt/image2.png" alt="Багийн ажлын алба" onerror="this.style.display='none'">
+        </div>
+        <div class="hero-image-wrap" onclick="openLightbox('images/sainshand_logo.png')">
+          <img src="images/sainshand_logo.png" onerror="this.src='images_zurag_avalt/image1.png'" alt="Сайншанд сумын сүлд">
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick KPI Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent-color: var(--accent-cyan);">
+        <div class="kpi-header">
+          <span class="kpi-label">Журмын хэрэгжилт</span>
+          <div class="kpi-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+        </div>
+        <div class="kpi-value">98%</div>
+        <div class="kpi-subtext">56 журмаас 55 нь бүрэн хэрэгжиж байна</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-emerald);">
+        <div class="kpi-header">
+          <span class="kpi-label">Багийн бүтэц</span>
+          <div class="kpi-icon"><i class="fa-solid fa-landmark"></i></div>
+        </div>
+        <div class="kpi-value">8 Баг</div>
+        <div class="kpi-subtext">Баг тус бүр 7–9 албан хаагчтай</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-purple);">
+        <div class="kpi-header">
+          <span class="kpi-label">Судалгааны ажил</span>
+          <div class="kpi-icon"><i class="fa-solid fa-chart-column"></i></div>
+        </div>
+        <div class="kpi-value">21-28</div>
+        <div class="kpi-subtext">2026 онд гаргасан нийт судалгааны төрөл</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-amber);">
+        <div class="kpi-header">
+          <span class="kpi-label">Иргэдийн оролцоо</span>
+          <div class="kpi-icon"><i class="fa-solid fa-users-line"></i></div>
+        </div>
+        <div class="kpi-value">5,876</div>
+        <div class="kpi-subtext">21 арга хэмжээнд хамрагдсан иргэд, албан хаагчид</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-blue);">
+        <div class="kpi-header">
+          <span class="kpi-label">Сэтгэл ханамж</span>
+          <div class="kpi-icon"><i class="fa-solid fa-square-poll-vertical"></i></div>
+        </div>
+        <div class="kpi-value">308</div>
+        <div class="kpi-subtext">А/159 захирамжаар хамрагдсан иргэд</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-rose);">
+        <div class="kpi-header">
+          <span class="kpi-label">Хуулийн заалт</span>
+          <div class="kpi-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        </div>
+        <div class="kpi-value">157</div>
+        <div class="kpi-subtext">Бие даасан 48 хуулиар хүлээсэн чиг үүрэг</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: ӨДӨР ТУТМЫН ҮЙЛ АЖИЛЛАГАА, 56 ЖУРМЫН ХЭРЭГЖИЛТ -->
+  <section id="summary" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">01</span>
+        <div>
+          <h2 class="section-title">Өдөр тутмын үйл ажиллагаа, 56 журмын тохиромжтой байдал</h2>
+          <p class="section-desc">Багийн ажлын албадын өдөр тутмын үйл ажиллагаа, үйлчилгээнд хэрэглэгдэх дүрэм журмын хэрэгжилт</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> 56 Журмын хэрэгжилтийн хувь</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+          Өдөр тутмын үйл ажиллагаа, үйлчилгээнд хэрэглэгдэх 56 журмыг үйл ажиллагаандаа хэвшүүлэх, тохиромжтой байдлын тайланг гаргахад:
+        </p>
+
+        <div class="chart-container" style="height: 250px;">
+          <canvas id="chartProcedures"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+          <div style="padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.3);">
+            <div style="font-size: 0.8rem; color: var(--accent-emerald); font-weight: 700;">ХЭРЭГЖСЭН ЖУРАМ</div>
+            <div style="font-size: 1.8rem; font-weight: 800; color: #fff;">55 <span style="font-size: 1rem; color: var(--accent-emerald);">(98%)</span></div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">Үйл ажиллагаанд бүрэн хэвшсэн</div>
+          </div>
+          <div style="padding: 1rem; background: rgba(244, 63, 94, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(244, 63, 94, 0.3);">
+            <div style="font-size: 0.8rem; color: var(--accent-rose); font-weight: 700;">ХЭРЭГЖЭЭГҮЙ ЖУРАМ</div>
+            <div style="font-size: 1.8rem; font-weight: 800; color: #fff;">1 <span style="font-size: 1rem; color: var(--accent-rose);">(2%)</span></div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">Ж.13 Шүүхэд төлөөлөх журам</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 class="card-title"><i class="fa-solid fa-list-check"></i> Хяналт-шинжилгээ, үнэлгээний дүгнэлт</h3>
+          <div class="directive-box">
+            <p><strong>Үйл ажиллагааны дүгнэлт:</strong> Нийт журмын <strong>55 буюу 98 хувь</strong> нь хэрэгжиж, <strong>1 /Ж.13 Шүүхэд төлөөлөх журам/ буюу 2 хувь</strong> нь тайлант хугацаанд хэрэгжээгүй буюу тухайн үйл ажиллагаатай холбоотой процессын ажил хийгдээгүй байна.</p>
+          </div>
+
+          <div style="background: rgba(13, 30, 51, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1rem;">
+            <h4 style="color: var(--accent-cyan); font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-compass"></i> Цаашид хэрэгжүүлэх удирдамж:
+            </h4>
+            <p style="font-size: 0.88rem; color: #e2e8f0; line-height: 1.6;">
+              Хяналт-шинжилгээ, үнэлгээ хийх ажлыг хагас, бүтэн жилээр гаргаж удирдлагын зөвлөлийн хурлаар хэлэлцүүлж, зохион байгуулалтын нэгжийн гүйцэтгэлийн төлөвлөгөөнд тусгаж ажиллах нь зүйтэй байна.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(56, 189, 248, 0.08); border-radius: var(--radius-md); border-left: 3px solid var(--accent-blue);">
+          <div style="font-size: 0.82rem; color: var(--accent-blue); font-weight: 700;">ЖУРМЫН ХЭВШИЛТ</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+            Төрийн үйлчилгээний стандарт, баримт бичгийн хөтлөлт, тайлагналт, иргэдэд үйлчлэх үндсэн 56 журмын хэрэгжилтийн түвшин өндөр сайн гарсан.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: ЭРХ ЗҮЙН ҮНДЭСЛЭЛ & БҮТЭЦ ОРОН ТОО -->
+  <section id="structure" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">02</span>
+        <div>
+          <h2 class="section-title">Эрх зүйн үндэслэл, бүтэц орон тоо ба ажлын албадын байр</h2>
+          <p class="section-desc">Сумын Засаг даргын А/51 дүгээр тушаал, Төсвийн тухай хуулийн 14.2.12 заалтын хэрэгжилт</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Legal & Staffing -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-scale-balanced"></i> Эрх зүйн үндэслэл & Ажлын хэсэг</h3>
+        <div class="directive-box">
+          <p>
+            Сумын Засаг даргын Тамгын газрын даргын <strong>2026 оны 10 дугаар сарын 08-ны өдрийн А/51 дүгээр тушаалаар</strong> “Ажлын хэсэг”-ийг байгуулж, багийн ажлын албаны ажлын байрны зураг авалтын ажлыг зохион байгуулахдаа <em>Монгол Улсын Засаг захиргаа, нутаг дэвсгэрийн нэгж, түүний удирдлагын тухай хууль</em>, <em>Засгийн газрын 2018 оны 22 дугаар тогтоолыг</em> удирдлага болгон зохион байгуулав.
+          </p>
+        </div>
+
+        <h4 style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem;">
+          Багийн ажлын албаны бүтэц, орон тоо (Төсвийн тухай хууль §14.2.12):
+        </h4>
+
+        <div class="staff-structure-box">
+          <div class="staff-item">
+            <div class="staff-role"><i class="fa-solid fa-user-tie"></i> Багийн Засаг дарга</div>
+            <div class="staff-count">1</div>
+          </div>
+          <div class="staff-item">
+            <div class="staff-role"><i class="fa-solid fa-bullhorn"></i> Бүртгэл олон нийттэй харилцах ажилтан</div>
+            <div class="staff-count">1</div>
+          </div>
+          <div class="staff-item">
+            <div class="staff-role"><i class="fa-solid fa-hand-holding-heart"></i> Нийгмийн ажилтан</div>
+            <div class="staff-count">1</div>
+          </div>
+          <div class="staff-item">
+            <div class="staff-role"><i class="fa-solid fa-people-roof"></i> Хэсгийн ахлагч (гэрээт ажилтан)</div>
+            <div class="staff-count">4 – 6</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; padding: 0.85rem 1rem; background: rgba(0, 229, 255, 0.08); border-radius: var(--radius-md); font-size: 0.85rem; color: #e2e8f0;">
+          <i class="fa-solid fa-circle-info" style="color: var(--accent-cyan); margin-right: 0.4rem;"></i>
+          Хамгийн олон хүнтэй <strong>2-р багт 6</strong> хэсгийн ахлагч ажилладаг бөгөөд нийт баг бүр <strong>7–9 хүний бүрэлдэхүүнтэй</strong> байхаар батлагдсан байна.
+        </div>
+      </div>
+
+      <!-- Bag Buildings Timeline -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-building-flag"></i> Багийн ажлын албадын байр ашиглалтад орсон он</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Иргэдэд үзүүлэх үйлчилгээ чанар хүртээмжийг нэмэгдүүлэх зорилгоор багийн ажлын албадын байрыг шинэчлэн, ашиглалтад оруулсан хугацаа:
+        </p>
+
+        <div class="bag-timeline-grid">
+          <div class="bag-year-card">
+            <div class="bag-num">1-р баг</div>
+            <div class="bag-year">2018</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">2-р баг</div>
+            <div class="bag-year">2018</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">6-р баг</div>
+            <div class="bag-year">2018</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">7-р баг</div>
+            <div class="bag-year">2018</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">5-р баг</div>
+            <div class="bag-year">2019</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">4-р баг</div>
+            <div class="bag-year">2020</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">8-р баг</div>
+            <div class="bag-year">2020</div>
+          </div>
+          <div class="bag-year-card">
+            <div class="bag-num">3-р баг</div>
+            <div class="bag-year">2022</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <h4 style="font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">Байр ашиглалтад орсон он цагийн тархалт:</h4>
+          <div class="chart-container" style="height: 180px;">
+            <canvas id="chartBuildings"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ХҮНИЙ НӨӨЦИЙН ШИЛЖИЛТ ХӨДӨЛГӨӨН (2024-2026) -->
+  <section id="turnover" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">03</span>
+        <div>
+          <h2 class="section-title">Хүний нөөцийн шилжилт хөдөлгөөн (2024-2026 он)</h2>
+          <p class="section-desc">Хэсгийн ахлагч, нийгмийн ажилтан, зохион байгуулагчийн сэлгээ, тогтвор суурьшилтын шинжилгээ</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-1-2">
+      <!-- Summary Card -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-users-gear"></i> Нийт шилжилт хөдөлгөөн</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+          2024–2026 оны хооронд Сайншанд сумын 8 багийн хэмжээнд бүртгэгдсэн албан хаагчдын шилжилт хөдөлгөөн:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <div style="padding: 1rem; background: rgba(244, 63, 94, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(244, 63, 94, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--accent-rose); font-weight: 700;">ХЭСГИЙН АХЛАГЧ</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: #fff;">45</div>
+              </div>
+              <i class="fa-solid fa-person-walking-arrow-right" style="font-size: 2rem; color: var(--accent-rose); opacity: 0.5;"></i>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.3rem;">3-р багт хамгийн өндөр буюу 12 хүн сэлгэгдсэн</div>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(56, 189, 248, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(56, 189, 248, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 700;">НИЙГМИЙН АЖИЛТАН</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: #fff;">5</div>
+              </div>
+              <i class="fa-solid fa-hand-holding-heart" style="font-size: 2rem; color: var(--accent-blue); opacity: 0.5;"></i>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.3rem;">1, 2, 3, 5, 6-р багуудад тус бүр 1</div>
+          </div>
+
+          <div style="padding: 1rem; background: rgba(168, 85, 247, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(168, 85, 247, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--accent-purple); font-weight: 700;">ЗОХИОН БАЙГУУЛАГЧ</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: #fff;">3</div>
+              </div>
+              <i class="fa-solid fa-laptop-file" style="font-size: 2rem; color: var(--accent-purple); opacity: 0.5;"></i>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.3rem;">1-р багт 2, 3-р багт 1</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; padding: 0.85rem; background: rgba(13, 30, 51, 0.7); border-radius: var(--radius-md); font-size: 0.82rem; color: var(--text-muted);">
+          <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-amber); margin-right: 0.3rem;"></i>
+          Хэсгийн ахлагчийн шилжилт хөдөлгөөн өндөр байгаа нь ажлын ачаалал их, цалин урамшуулал, нийгмийн баталгаа дутмаг байгаатай шууд холбоотой.
+        </div>
+      </div>
+
+      <!-- Turnover Charts -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-chart-column"></i> 2024–2026 оны Хэсгийн ахлагчийн шилжилт хөдөлгөөн (Баг тус бүрээр)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+          Хэсгийн ахлагч нарын баг тус бүрээрх сэлгэлт, тогтворгүй байдлын үзүүлэлт:
+        </p>
+
+        <div class="chart-container tall">
+          <canvas id="chartSectionTurnover"></canvas>
+        </div>
+
+        <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 0.3rem;">Нийгмийн ажилтны шилжилт</h4>
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="chartSocialTurnover"></canvas>
+            </div>
+          </div>
+          <div>
+            <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--accent-purple); margin-bottom: 0.3rem;">Зохион байгуулагчийн шилжилт</h4>
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="chartOrganizerTurnover"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: ДОТООД ЗОХИОН БАЙГУУЛАЛТ, БАРИМТ БИЧГИЙН ЭРГЭЛТ & СУДАЛГАА -->
+  <section id="documents" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">04</span>
+        <div>
+          <h2 class="section-title">Дотоод зохион байгуулалт, баримт бичгийн эргэлт & судалгаа</h2>
+          <p class="section-desc">Ажлын албадын бичиг хэргийн урсгал, 2026 онд гүйцэтгэсэн 21-28 төрлийн судалгааны шинжилгээ</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Document flow -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-folder-tree"></i> Багийн ажлын албаны баримт бичгийн эргэлт</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+          Багийн ажлын албанд ирж буй албан бичгийн шийдвэрлэлтийн үзүүлэлт:
+        </p>
+
+        <div class="chart-container" style="height: 260px;">
+          <canvas id="chartDocFlow"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem;">
+          <div style="text-align: center; padding: 0.75rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">7 ХОНОГТ ИРСЭН</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff;">22</div>
+          </div>
+          <div style="text-align: center; padding: 0.75rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">САРД ИРСЭН</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff;">63</div>
+          </div>
+          <div style="text-align: center; padding: 0.75rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">УЛИРАЛД ИРСЭН</div>
+            <div style="font-size: 1.4rem; font-weight: 800; color: #fff;">182</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; padding: 0.85rem; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.85rem; color: var(--accent-emerald); font-weight: 700;">ХАРИУТАЙ БИЧГИЙН ШИЙДВЭРЛЭЛТ</span>
+            <span style="font-size: 1.1rem; font-weight: 800; color: #fff;">164 / 164 (100%)</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem;">
+            Хариутай бичиг бүр хугацаа хоцроогүй бүрэн шийдвэрлэгдсэн.
+          </p>
+        </div>
+      </div>
+
+      <!-- Survey breakdowns -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Судалгааны ажил (2026 он)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+          Багийн ажлын алба нь 2026 онд нийт <strong>21–28 төрлийн судалгаа</strong> гаргаж холбогдох байгууллагуудад хүргүүлсэн байна.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem;">
+          <div style="padding: 0.85rem; background: rgba(37, 99, 235, 0.12); border-radius: var(--radius-md); border: 1px solid rgba(37, 99, 235, 0.3); text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-cyan);">12</div>
+            <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: 600;">Иргэн, ААН-тэй холбогдон авах</div>
+          </div>
+          <div style="padding: 0.85rem; background: rgba(16, 185, 129, 0.12); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-emerald);">4</div>
+            <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: 600;">Ажлын албанд хадгалагдаж буй</div>
+          </div>
+          <div style="padding: 0.85rem; background: rgba(245, 158, 11, 0.12); border-radius: var(--radius-md); border: 1px solid rgba(245, 158, 11, 0.3); text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-amber);">12</div>
+            <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: 600;">Дахин өгөгдөл бүрдүүлэх шаардлагатай</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); background: rgba(13, 30, 51, 0.6); padding: 0.75rem 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-cyan);">
+          <i class="fa-solid fa-hourglass-half" style="color: var(--accent-cyan); margin-right: 0.4rem;"></i>
+          Судалгаа шийдвэрлэлтийн дундаж хугацаа <strong>2–5 хоног</strong>, сард дунджаар <strong>2–3 төрлийн судалгаа</strong> мэдээллийг гаргаж байна.
+        </div>
+
+        <h4 style="font-size: 0.9rem; font-weight: 700; color: #fff; margin-top: 1.25rem;">
+          Судалгаа ирүүлж буй аж ахуйн нэгж, байгууллагууд:
+        </h4>
+
+        <div class="agency-pill-grid">
+          <div class="agency-pill">
+            <span class="agency-name">Сайншанд сумын ЗДТГ</span>
+            <span class="agency-count">10</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Хотын Захирагчийн ажлын алба</span>
+            <span class="agency-count">4</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Хөдөлмөр, халамжийн газар</span>
+            <span class="agency-count">4</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Статистикийн хэлтэс</span>
+            <span class="agency-count">3</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Сургууль, цэцэрлэг, ӨЭМТ</span>
+            <span class="agency-count">3</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Ахмадын хороо</span>
+            <span class="agency-count">2</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Авто тээврийн газар</span>
+            <span class="agency-count">1</span>
+          </div>
+          <div class="agency-pill">
+            <span class="agency-name">Татварын газар</span>
+            <span class="agency-count">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: АЖЛЫН БАЙРНЫ ЗУРАГЛАЛ (4 АЛБАН ТУШААЛ) -->
+  <section id="timetables" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">05</span>
+        <div>
+          <h2 class="section-title">Ажлын байрны зураглал (Хронометрийн хэмжилт)</h2>
+          <p class="section-desc">Багийн Засаг дарга, нийгмийн ажилтан, зохион байгуулагч, хэсгийн ахлагчийн өдөр тутмын 08:00 - 17:00 цагийн хуваарь</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <div class="timetable-tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-mayor')">
+          <i class="fa-solid fa-user-tie"></i> 1. Багийн Засаг дарга
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-social')">
+          <i class="fa-solid fa-hand-holding-heart"></i> 2. Нийгмийн ажилтан
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-organizer')">
+          <i class="fa-solid fa-laptop-code"></i> 3. Зохион байгуулагч
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-leader')">
+          <i class="fa-solid fa-people-roof"></i> 4. Хэсгийн ахлагч
+        </button>
+      </div>
+
+      <!-- Tab 1: Багийн Засаг даргын ажлын зураглал -->
+      <div id="tab-mayor" class="tab-pane active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700;">Багийн Засаг даргын ажлын зураглал (8 ажилбар)</h3>
+          <span class="badge badge-cyan"><i class="fa-solid fa-clock"></i> Нийт цаг: 08:00 - 17:00</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">№</th>
+                <th>Ажилбар</th>
+                <th style="width: 140px;">Хугацаа (мин)</th>
+                <th style="width: 100px;">Алдагдал</th>
+                <th style="width: 150px;">Цагийн ангилал</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Ирсэн албан бичигтэй танилцан, холбогдох албан хаагчид шилжүүлэх</td>
+                <td><span class="duration-badge">10 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:00 - 08:10</span></td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>Тухайн өдрийн хийх ажлыг төлөвлөгөөг гаргах</td>
+                <td><span class="duration-badge">20 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:10 - 08:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td>Албан хаагчдад үүрэг чиглэл өгч, удирдлагаар хангах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:30 - 09:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td>Иргэдтэй уулзаж санал, хүсэлтийг хүлээн авах, мэдээлэл өгөх</td>
+                <td><span class="duration-badge">40 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">09:00 - 09:40</span></td>
+              </tr>
+              <tr style="background: rgba(0, 229, 255, 0.05);">
+                <td><strong>5</strong></td>
+                <td><strong>Багийн нутаг дэвсгэр дээр эргэлт хийж, хяналт тавих</strong></td>
+                <td><span class="duration-badge" style="background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan);">140 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">09:40 - 12:00</span></td>
+              </tr>
+              <tr style="opacity: 0.7;">
+                <td><strong>6</strong></td>
+                <td>Цайны цаг</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">12:00 - 13:00</span></td>
+              </tr>
+              <tr style="background: rgba(37, 99, 235, 0.05);">
+                <td><strong>7</strong></td>
+                <td><strong>ССЗДТГ-т хуралд суух</strong></td>
+                <td><span class="duration-badge" style="background: rgba(37, 99, 235, 0.2); color: var(--accent-blue);">120 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">13:00 - 15:00</span></td>
+              </tr>
+              <tr style="background: rgba(168, 85, 247, 0.05);">
+                <td><strong>8</strong></td>
+                <td><strong>Нийгмийн ажилтантай гэрийн эргүүл хийх</strong></td>
+                <td><span class="duration-badge" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);">90 - 120 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">15:00 - 17:00</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 2: Нийгмийн ажилтны ажлын зураглал -->
+      <div id="tab-social" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700;">Нийгмийн ажилтны ажлын зураглал (8 ажилбар)</h3>
+          <span class="badge badge-blue"><i class="fa-solid fa-clock"></i> Нийт цаг: 08:00 - 17:00</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">№</th>
+                <th>Ажилбар</th>
+                <th style="width: 140px;">Хугацаа (мин)</th>
+                <th style="width: 100px;">Алдагдал</th>
+                <th style="width: 150px;">Цагийн ангилал</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Байгууллагуудаас албан бичгээр болон телеграммаар ирсэн хариутай албан бичиг, судалгааны маягттай танилцах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:00 - 08:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>Судалгаа гаргах</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:30 - 09:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td>Эрсдэлт өрх болон дэмжих өрхийн тоон мэдээлэл, судалгааг гаргах</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">09:30 - 10:30</span></td>
+              </tr>
+              <tr style="background: rgba(245, 158, 11, 0.05);">
+                <td><strong>4</strong></td>
+                <td><strong>Эрсдэлт нөхцөлд амьдарч буй өрхүүдээр гэрийн эргэлт хийх</strong></td>
+                <td><span class="duration-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">90 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">10:30 - 12:00</span></td>
+              </tr>
+              <tr style="opacity: 0.7;">
+                <td><strong>5</strong></td>
+                <td>Цайны цаг</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">12:00 - 13:00</span></td>
+              </tr>
+              <tr style="background: rgba(244, 63, 94, 0.06);">
+                <td><strong>6</strong></td>
+                <td><strong>108 утсанд ирсэн дуудлагын дагуу Гэр бүлийн нийгмийн ажилтны хамтаар иргэдийн гэрээр очиж нөхцөл байдлын үнэлгээ хийх, ярилцах</strong></td>
+                <td><span class="duration-badge" style="background: rgba(244, 63, 94, 0.2); color: var(--accent-rose);">120 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">13:00 - 15:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>7</strong></td>
+                <td>Удирдлагаас өгсөн болон цаг үеийн холбогдолтой чиг үүргийг хэрэгжүүлэх</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">15:00 - 16:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>8</strong></td>
+                <td>Статистикийн тоон мэдээг гаргах</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">16:00 - 17:00</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 3: Зохион байгуулагчийн ажлын зураглал -->
+      <div id="tab-organizer" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700;">Зохион байгуулагчийн ажлын зураглал (10 ажилбар)</h3>
+          <span class="badge badge-emerald"><i class="fa-solid fa-clock"></i> Нийт цаг: 08:00 - 17:00</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">№</th>
+                <th>Ажилбар</th>
+                <th style="width: 140px;">Хугацаа (мин)</th>
+                <th style="width: 100px;">Алдагдал</th>
+                <th style="width: 150px;">Цагийн ангилал</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Компьютер, принтер, интернетийг асааж, ХАӨМС-ын программд нэвтэрч иргэдэд үйлчилгээ үзүүлэхэд бэлтгэх</td>
+                <td><span class="duration-badge">10 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:00 - 08:10</span></td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>ERP системд нэвтэрч ирсэн албан бичиг байгаа эсэхийг шалгах, бүртгэх, Багийн засаг даргад танилцуулах</td>
+                <td><span class="duration-badge">20 - 30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:10 - 08:40</span></td>
+              </tr>
+              <tr style="background: rgba(0, 229, 255, 0.05);">
+                <td><strong>3</strong></td>
+                <td><strong>ХАӨМС-ийн программд шилжин ирсэн, шилжин явсан, шинэ төрсөн хүүхэд, нас барсан иргэдийн мэдээллийг бүртгэх, өрхийн дэвтэрт тэмдэглэл хийлгэх</strong></td>
+                <td><span class="duration-badge">30 - 60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:40 - 09:40</span></td>
+              </tr>
+              <tr style="opacity: 0.7;">
+                <td><strong>4</strong></td>
+                <td>Хувийн хэрэгцээ</td>
+                <td><span class="duration-badge">5 - 20 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">09:40 - 10:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td>Удирдлага болон харьяа дээд шатны байгууллагаас өгсөн цаг үеийн нөхцөл байдлын чиг үүргийн ажил</td>
+                <td><span class="duration-badge">60 - 120 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">10:00 - 12:00</span></td>
+              </tr>
+              <tr style="opacity: 0.7;">
+                <td><strong>6</strong></td>
+                <td>Цайны цаг</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">12:00 - 13:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>7</strong></td>
+                <td>Иргэдэд хаягийн тодорхойлолт гаргах</td>
+                <td><span class="duration-badge">10 - 30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">13:00 - 13:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>8</strong></td>
+                <td>Удирдлага болон харьяа дээд шатны байгууллагаас өгсөн цаг үеийн нөхцөл байдлын чиг үүргийн ажил</td>
+                <td><span class="duration-badge">60 - 120 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">13:30 - 15:30</span></td>
+              </tr>
+              <tr style="background: rgba(245, 158, 11, 0.05);">
+                <td><strong>9</strong></td>
+                <td><strong>ХАӨМС-ийн программын алдаа засварлах</strong></td>
+                <td><span class="duration-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">30 - 60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">15:30 - 16:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>10</strong></td>
+                <td>Иргэдэд хүргэсэн үйлчилгээ буюу тодорхойлолт болон өргөдөл, гомдлыг бүртгэх, тэмдэглэл хөтлөх</td>
+                <td><span class="duration-badge">20 - 30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">16:30 - 17:00</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 4: Хэсгийн ахлагчийн ажлын зураглал -->
+      <div id="tab-leader" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-size: 1.1rem; color: #fff; font-weight: 700;">Хэсгийн ахлагчийн ажлын зураглал (11 ажилбар)</h3>
+          <span class="badge badge-cyan"><i class="fa-solid fa-clock"></i> Нийт цаг: 08:00 - 17:00</span>
+        </div>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">№</th>
+                <th>Ажилбар</th>
+                <th style="width: 140px;">Хугацаа (мин)</th>
+                <th style="width: 100px;">Алдагдал</th>
+                <th style="width: 150px;">Цагийн ангилал</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Засаг дарга, нийгмийн ажилтан, зохион байгуулагч нараас чиглэл, үүрэг чиглэл авах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:00 - 08:30</span></td>
+              </tr>
+              <tr style="background: rgba(0, 229, 255, 0.05);">
+                <td><strong>2</strong></td>
+                <td><strong>Иргэдийн санал хүсэлтийг хүлээн авах</strong></td>
+                <td><span class="duration-badge" style="background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan);">90 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">08:30 - 10:00</span></td>
+              </tr>
+              <tr style="background: rgba(56, 189, 248, 0.05);">
+                <td><strong>3</strong></td>
+                <td><strong>Өөрийн биеэр айл өрхүүдээр явж мэдээ мэдээллээр хангах</strong></td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">10:00 - 11:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td>Судалгаа, мэдээлэл боловсруулах</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">11:00 - 12:00</span></td>
+              </tr>
+              <tr style="opacity: 0.7;">
+                <td><strong>5</strong></td>
+                <td>Цайны цаг</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">12:00 - 13:00</span></td>
+              </tr>
+              <tr style="background: rgba(245, 158, 11, 0.05);">
+                <td><strong>6</strong></td>
+                <td><strong>Цэрэг татлагад цэргийн насны эрчүүдийг хамруулах</strong></td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">13:00 - 14:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>7</strong></td>
+                <td>ААНБайгууллагуудад албан бичиг тараах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">14:00 - 14:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>8</strong></td>
+                <td>Яаралтай ирсэн судалгаа, мэдээллийг боловсруулах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">14:30 - 15:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>9</strong></td>
+                <td>ААНБайгууллагуудын нийтийн их цэвэрлэгээний ажилд хяналт тавих</td>
+                <td><span class="duration-badge">60 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">15:00 - 16:00</span></td>
+              </tr>
+              <tr>
+                <td><strong>10</strong></td>
+                <td>Үйл ажиллагаанд иргэдийн оролцоог хангах</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">16:00 - 16:30</span></td>
+              </tr>
+              <tr>
+                <td><strong>11</strong></td>
+                <td>Өрхийн дэвтэрт баяжилт хийх</td>
+                <td><span class="duration-badge">30 мин</span></td>
+                <td>-</td>
+                <td><span class="time-badge">16:30 - 17:00</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: ИРГЭДИЙН ОРОЛЦОО & ҮЙЛЧИЛГЭЭНИЙ ДИНАМИК -->
+  <section id="citizen-satisfaction" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">06</span>
+        <div>
+          <h2 class="section-title">Иргэдийн оролцоо ба үйлчилгээний динамик (2022-2026)</h2>
+          <p class="section-desc">21 арга хэмжээнд хамрагдсан 5,876 иргэн, багийн ажлын албадаар үйлчлүүлсэн иргэдийн 5 жилийн дүн</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Participation Stats & Monthly breakdown -->
+    <div class="grid-2">
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-users"></i> Иргэдийн оролцоог хангах чиглэлээр</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Сумын хэмжээнд аймгийн засаг даргын тамгын газар, агентлаг байгууллагуудаас зохион байгуулсан нийт <strong>21 арга хэмжээнд 5,876 иргэн</strong>, сумын төрийн албан хаагчдыг хамруулсан байна.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem;">
+          <div style="padding: 1rem; background: rgba(37, 99, 235, 0.12); border-radius: var(--radius-md); border: 1px solid rgba(37, 99, 235, 0.3);">
+            <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 700;">АЗДТГ-ААС ИРСЭН ЧИГЛЭЛ</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #fff;">13</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">Удирдамж чиглэл</div>
+          </div>
+          <div style="padding: 1rem; background: rgba(0, 229, 255, 0.12); border-radius: var(--radius-md); border: 1px solid rgba(0, 229, 255, 0.3);">
+            <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;">АГЕНТЛАГ, БАЙГУУЛЛАГААС</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #fff;">8</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">Хамтарсан чиглэл</div>
+          </div>
+        </div>
+
+        <h4 style="font-size: 0.92rem; font-weight: 700; color: #fff; margin-top: 1.25rem; margin-bottom: 0.5rem;">
+          Сүүлийн 6 сарын байдлаар (Сар тутмын хамрагдалт):
+        </h4>
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="chartMonthlyParticipation"></canvas>
+        </div>
+      </div>
+
+      <!-- Service users stats -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-bell-concierge"></i> 2026 онд ажлын албадаар үйлчлүүлсэн иргэд</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+          Иргэдийн төрийн үйлчилгээ авах хүртээмж, шийдвэрлэлтийн үр дүн:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 1rem;">
+          <div style="padding: 0.9rem; background: rgba(13, 30, 51, 0.7); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">САРД ҮЙЛЧИЛГЭЭ АВСАН</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #fff;">894</div>
+          </div>
+          <div style="padding: 0.9rem; background: rgba(13, 30, 51, 0.7); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">УЛИРАЛД ҮЙЛЧИЛГЭЭ АВСАН</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #fff;">2,198</div>
+          </div>
+        </div>
+
+        <div class="chart-container" style="height: 220px; margin-top: 1rem;">
+          <canvas id="chartServiceRate"></canvas>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; padding: 0.85rem 1rem; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.3); margin-top: 1rem;">
+          <div>
+            <span style="color: var(--accent-emerald); font-weight: 700; font-size: 0.85rem;">Үйлчилгээ авч чадсан:</span>
+            <strong style="color: #fff; font-size: 1.05rem; margin-left: 0.3rem;">2,168 (98.6%)</strong>
+          </div>
+          <div>
+            <span style="color: var(--accent-rose); font-weight: 700; font-size: 0.85rem;">Авч чадаагүй:</span>
+            <strong style="color: #fff; font-size: 1.05rem; margin-left: 0.3rem;">30 (1.4%)</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Year Dynamic Multi-Bar Chart & Full Table -->
+    <div class="glass-card" style="margin-top: 1.5rem;">
+      <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> 2022–2026 оны ажлын албаар үйлчлүүлсэн иргэдийн 5 жилийн динамик (Баг бүрээр)</h3>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+        Багийн ажлын албадуудаар сүүлийн 5 жилийн хугацаанд үйлчлүүлсэн иргэдийн тоон мэдээлэл:
+      </p>
+
+      <div class="chart-container tall">
+        <canvas id="chartFiveYearDynamic"></canvas>
+      </div>
+
+      <div class="table-responsive" style="margin-top: 1.5rem;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Багийн нэр</th>
+              <th style="text-align: right;">2022 он</th>
+              <th style="text-align: right;">2023 он</th>
+              <th style="text-align: right;">2024 он</th>
+              <th style="text-align: right;">2025 он</th>
+              <th style="text-align: right;">2026 он</th>
+              <th style="text-align: right; color: var(--accent-cyan);">5 жилийн нийт</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1-р баг</strong></td>
+              <td style="text-align: right;">313</td>
+              <td style="text-align: right;">750</td>
+              <td style="text-align: right;">850</td>
+              <td style="text-align: right;">532</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">601</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">3,046</td>
+            </tr>
+            <tr>
+              <td><strong>2-р баг</strong></td>
+              <td style="text-align: right;">381</td>
+              <td style="text-align: right;">730</td>
+              <td style="text-align: right;">650</td>
+              <td style="text-align: right;">544</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">656</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">2,961</td>
+            </tr>
+            <tr>
+              <td><strong>3-р баг</strong></td>
+              <td style="text-align: right;">269</td>
+              <td style="text-align: right;">550</td>
+              <td style="text-align: right;">200</td>
+              <td style="text-align: right;">535</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">577</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">2,131</td>
+            </tr>
+            <tr>
+              <td><strong>4-р баг</strong></td>
+              <td style="text-align: right;">213</td>
+              <td style="text-align: right;">391</td>
+              <td style="text-align: right;">346</td>
+              <td style="text-align: right;">405</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">561</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">1,916</td>
+            </tr>
+            <tr>
+              <td><strong>6-р баг</strong></td>
+              <td style="text-align: right;">220</td>
+              <td style="text-align: right;">258</td>
+              <td style="text-align: right;">201</td>
+              <td style="text-align: right;">758</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">667</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">2,104</td>
+            </tr>
+            <tr>
+              <td><strong>7-р баг</strong></td>
+              <td style="text-align: right;">281</td>
+              <td style="text-align: right;">258</td>
+              <td style="text-align: right;">201</td>
+              <td style="text-align: right;">780</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">661</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">2,181</td>
+            </tr>
+            <tr>
+              <td><strong>8-р баг</strong></td>
+              <td style="text-align: right;">295</td>
+              <td style="text-align: right;">361</td>
+              <td style="text-align: right;">378</td>
+              <td style="text-align: right;">713</td>
+              <td style="text-align: right; font-weight: 700; color: var(--accent-cyan);">569</td>
+              <td style="text-align: right; font-weight: 800; color: #fff;">2,316</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr style="background: rgba(37, 99, 235, 0.15); font-weight: 800;">
+              <td>НИЙТ ДҮН</td>
+              <td style="text-align: right;">1,972</td>
+              <td style="text-align: right;">3,298</td>
+              <td style="text-align: right;">2,826</td>
+              <td style="text-align: right;">4,267</td>
+              <td style="text-align: right; color: var(--accent-cyan);">4,292</td>
+              <td style="text-align: right; color: var(--accent-cyan);">16,655</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: ХЭРЭГЛЭГЧИЙН СЭТГЭЛ ХАНАМЖИЙН СУДАЛГАА (А/159) -->
+  <section id="satisfaction" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">07</span>
+        <div>
+          <h2 class="section-title">Хэрэглэгчийн сэтгэл ханамжийн судалгаа (Захирамж А/159)</h2>
+          <p class="section-desc">2026 оны 2 дугаар улиралд цахим болон цаасан хэлбэрээр хамрагдсан 308 иргэний үнэлгээний тайлан</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Survey Participants by Bag -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> Санал асуулгад хамрагдсан иргэд (Баг тус бүрээр)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+          Сумын Засаг даргын 2026 оны <strong>А/159 дүгээр захирамжийн хүрээнд</strong> нийт <strong>308 иргэн</strong> сэтгэл ханамжийн судалгаанд хамрагдсан:
+        </p>
+
+        <div class="chart-container" style="height: 250px;">
+          <canvas id="chartSatisfactionBags"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1rem;">
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">1-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">40</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">2-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">51</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">3-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">40</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">4-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">41</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">6-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-cyan);">80</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">7-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">16</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">8-Р БАГ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">40</div>
+          </div>
+          <div style="text-align: center; padding: 0.6rem; background: rgba(0, 229, 255, 0.12); border-radius: var(--radius-sm); border: 1px solid rgba(0, 229, 255, 0.3);">
+            <div style="font-size: 0.72rem; color: var(--accent-cyan); font-weight: 700;">НИЙТ</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">308</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Survey Feedback Breakdown -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-clipboard-check"></i> Хэрэглэгчийн үнэлгээний санал асуулгын үр дүн</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Иргэдээс орон нутгийн үйл ажиллагаанд өгсөн хангалттай болон хангалтгүй үнэлгээний ангилал:
+        </p>
+
+        <div class="satisfaction-box">
+          <!-- Good Evaluation -->
+          <div class="eval-card good">
+            <div class="eval-title"><i class="fa-solid fa-circle-check"></i> ХАНГАЛТТАЙ ҮНЭЛСЭН</div>
+            <ul class="eval-list">
+              <li><i class="fa-solid fa-check"></i> Орон нутгийн засаглалын бодлого</li>
+              <li><i class="fa-solid fa-check"></i> Хөрөнгө оруулалтын ажлын хүртээмж</li>
+              <li><i class="fa-solid fa-check"></i> Бүтээн байгуулалтын ажлын хүртээмж</li>
+            </ul>
+          </div>
+
+          <!-- Poor Evaluation -->
+          <div class="eval-card poor">
+            <div class="eval-title"><i class="fa-solid fa-triangle-exclamation"></i> ХАНГАЛТГҮЙ ҮНЭЛСЭН</div>
+            <ul class="eval-list">
+              <li><i class="fa-solid fa-xmark"></i> Хот төлөвлөлт</li>
+              <li><i class="fa-solid fa-xmark"></i> Ногоон байгууламжийн хүртээмж</li>
+              <li><i class="fa-solid fa-xmark"></i> Агаарын бохирдол</li>
+              <li><i class="fa-solid fa-xmark"></i> Хүнсний хангамж</li>
+              <li><i class="fa-solid fa-xmark"></i> Хөдөлмөр эрхлэлт</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 1rem; background: rgba(13, 30, 51, 0.7); border-radius: var(--radius-md); border-left: 3px solid var(--accent-amber); font-size: 0.85rem; color: #cbd5e1;">
+          <i class="fa-solid fa-lightbulb" style="color: var(--accent-amber); margin-right: 0.4rem;"></i>
+          Иргэдийн өгсөн санал, шүүмжлэлд үндэслэн хот тохижилт, агаар орчны чанар, хүнсний аюулгүй байдал, ажлын байр нэмэгдүүлэх чиглэлээр төсөв хөрөнгө оруулалтыг төвлөрүүлэх шаардлагатай.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: ХУУЛЬ ТОГТООМЖИЙН ХЭРЭГЖИЛТ & ЦАГ ЗАРЦУУЛАЛТЫН ДҮГНЭЛТ -->
+  <section id="conclusion" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">08</span>
+        <div>
+          <h2 class="section-title">Хууль тогтоомжийн хэрэгжилт ба цаг зарцуулалтын дүгнэлт</h2>
+          <p class="section-desc">Багийн Засаг даргын 48 хуулийн 157 заалтын чиг үүрэг ба ажлын цаг зарцуулалтын 5 чиглэл</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Ажлын цаг зарцуулалтын тэргүүлэх 5 чиглэл</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+          Багийн Засаг дарга /ажлын алба/ нь <strong>18 салбарын хууль тогтоомжийн</strong> хүрээнд дараах 5 чиглэлд хамгийн өндөр ажлын цаг зарцуулж байна:
+        </p>
+
+        <div class="chart-container" style="height: 270px;">
+          <canvas id="chartTimeDistribution"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 1rem;">
+          <div style="padding: 0.65rem 0.85rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border-left: 3px solid #38bdf8;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">СТАТИСТИК, СУДАЛГАА</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">28%</div>
+          </div>
+          <div style="padding: 0.65rem 0.85rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border-left: 3px solid #10b981;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">ХОГ ХАЯГДЛЫН ЧИГЛЭЛ</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">24%</div>
+          </div>
+          <div style="padding: 0.65rem 0.85rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border-left: 3px solid #a855f7;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">ХАМТАРСАН БАГ</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">23%</div>
+          </div>
+          <div style="padding: 0.65rem 0.85rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border-left: 3px solid #f59e0b;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">БАТЛАН ХАМГААЛАХ</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">13%</div>
+          </div>
+          <div style="grid-column: span 2; padding: 0.65rem 0.85rem; background: rgba(13, 30, 51, 0.6); border-radius: var(--radius-sm); border-left: 3px solid #00e5ff;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">ИРГЭДИЙН ОРОЛЦООГ ХАНГАХ</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fff;">12%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 class="card-title"><i class="fa-solid fa-gavel"></i> ДҮГНЭЛТ: Хууль эрх зүйн ачааллын тэнцвэргүй байдал</h3>
+          <div class="directive-box">
+            <p>
+              Багийн Засаг дарга /ажлын алба/ нь Монгол Улсын хэмжээнд хүчин төгөлдөр мөрдөгдөж буй <strong>бие даасан 48 хуулийн 157 заалтаар</strong> эрх, үүрэг хүлээсэн.
+            </p>
+          </div>
+
+          <p style="font-size: 0.92rem; color: #e2e8f0; line-height: 1.65; margin-top: 1rem;">
+            Ажлын байрны зураг авалт хийхэд Батлан хамгаалах, хамтарсан баг, статистик /судалгаа мэдээлэл/, хог хаягдлын чиглэлээр, иргэдийн оролцоог бүрдүүлэх зэрэг <strong>5 чиглэлээр 18 салбарын хууль тогтоомжийн хүрээнд ажлын цаг зарцуулалт нь өндөр үзүүлэлттэй</strong> байна.
+          </p>
+
+          <div style="margin-top: 1rem; padding: 1.15rem; background: rgba(244, 63, 94, 0.08); border-radius: var(--radius-md); border: 1px solid rgba(244, 63, 94, 0.3);">
+            <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--accent-rose); margin-bottom: 0.4rem;">
+              <i class="fa-solid fa-triangle-exclamation"></i> Үлдсэн 30 салбарын хууль тогтоомжийн хэрэгжилт:
+            </h4>
+            <p style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.6;">
+              Үүнээс харахад бусад салбарын хууль тогтоомж буюу <em>Газрын тухай хууль тогтоомж</em>, <em>Гэрийн тэжээвэр амьтны тухай хууль</em>, <em>Байгаль орчныг хамгаалах тухай хууль</em>, <em>Гэмт хэрэг, зөрчлөөс урьдчилан сэргийлэх тухай хууль</em> гэх мэт <strong>30 салбарын хууль тогтоомжийн хэрэгжилтийн гүйцэтгэл хангалтгүй</strong> байгаа нь тухайн анхан шатны нэгжийн ажлын ачаалал тогтмол хийгддэг байнгын шинжтэй ажлуудад зарцуулагдаж байгааг харуулж байна.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: ХЭСГИЙН АХЛАГЧИЙН ЦАЛИН ХӨЛС & АЖИЛЛАХ НӨХЦӨЛ -->
+  <section id="salary" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">09</span>
+        <div>
+          <h2 class="section-title">Хэсгийн ахлагчийн цалин хөлс, ажиллах нөхцөл & харьцуулалт</h2>
+          <p class="section-desc">ИТХ-ын 09/01 дүгээр тогтоол, бусад хот аймагтай харьцуулсан дүн, шийдвэрлэх шаардлага</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Salary Comparison Chart -->
+      <div class="glass-card">
+        <h3 class="card-title"><i class="fa-solid fa-money-bill-trend-up"></i> Бүс нутгийн цалин хөлсний харьцуулалт (Төгрөгөөр)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+          Хэсгийн ахлагч нарын үндсэн цалин ба нэмэгдлийн хэмжээг бусад хот, аймгуудтай харьцуулбал:
+        </p>
+
+        <div class="chart-container" style="height: 300px;">
+          <canvas id="chartSalaryComp"></canvas>
+        </div>
+
+        <div class="table-responsive" style="margin-top: 1rem;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Хот / Аймаг / Сум</th>
+                <th style="text-align: right;">Үндсэн</th>
+                <th style="text-align: right;">Нэмэгдэл</th>
+                <th style="text-align: right; color: var(--accent-cyan);">Нийт цалин</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Баян-Өндөр (Орхон)</td>
+                <td style="text-align: right;">1,300,000₮</td>
+                <td style="text-align: right;">0₮</td>
+                <td style="text-align: right; font-weight: 700; color: #fff;">1,300,000₮</td>
+              </tr>
+              <tr>
+                <td>Улаанбаатар хот</td>
+                <td style="text-align: right;">1,200,000₮</td>
+                <td style="text-align: right;">0₮</td>
+                <td style="text-align: right; font-weight: 700; color: #fff;">1,200,000₮</td>
+              </tr>
+              <tr>
+                <td>Замын-Үүд (Дорноговь)</td>
+                <td style="text-align: right;">1,000,000₮</td>
+                <td style="text-align: right; color: var(--accent-emerald);">+200,000₮</td>
+                <td style="text-align: right; font-weight: 700; color: var(--accent-emerald);">1,200,000₮</td>
+              </tr>
+              <tr style="background: rgba(0, 229, 255, 0.08);">
+                <td><strong>Сайншанд сум (Одоогийн)</strong></td>
+                <td style="text-align: right;"><strong>1,000,000₮</strong></td>
+                <td style="text-align: right;"><strong>0₮</strong></td>
+                <td style="text-align: right; font-weight: 800; color: var(--accent-cyan);">1,000,000₮</td>
+              </tr>
+              <tr>
+                <td>Дархан сум (Дархан-Уул)</td>
+                <td style="text-align: right;">792,000₮</td>
+                <td style="text-align: right;">0₮</td>
+                <td style="text-align: right; font-weight: 700; color: #fff;">792,000₮</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Legal Decision & Needs -->
+      <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 class="card-title"><i class="fa-solid fa-file-contract"></i> ИТХ-ын 09/01 дүгээр тогтоол ба бодит хэрэгцээ</h3>
+          <div class="directive-box">
+            <p>
+              Сайншанд сумын Иргэдийн Төлөөлөгчдийн хурлын 2025 оны 12 дугаар сарын 12-ны өдрийн “Сайншанд сумын 2026 оны төсөв батлах тухай” <strong>09/01 дүгээр тогтоолоор</strong> Хэсгийн ахлагчийн цалинг <strong>1,000,000 төгрөг</strong> болгон баталсан.
+            </p>
+          </div>
+
+          <p style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.6; margin-top: 1rem;">
+            Хэсгийн ахлагч нь төрийн бодлого, шийдвэрийг иргэдэд хүргэх, иргэдийн санал хүсэлт, тулгамдсан асуудлыг холбогдох байгууллагад уламжлах, өрх, иргэдийн нөхцөл байдлын талаар мэдээлэл солилцох, төрийн байгууллага болон иргэдийн харилцаа холбоог бэхжүүлэхэд чухал үүрэг гүйцэтгэдэг.
+          </p>
+
+          <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6; margin-top: 0.75rem;">
+            Гэвч хэсгийн ахлагчийн хариуцан ажиллах өрхийн тоо, хүн амын нягтаршил, нутаг дэвсгэрийн хэмжээ, ажлын ачаалал болон иргэдэд хүргэх үйлчилгээний хэрэгцээ харилцан адилгүй байж болох тул <strong>цалин хөлс, ажиллах нөхцөлийг бодит ачаалалтай уялдуулан үнэлэх шаардлагатай</strong>. Мөн иргэдтэй байнга харилцах, мэдээлэл цуглуулах, хүргэх, тайлан мэдээ боловсруулах, шаардлагатай тохиолдолд шуурхай ажиллахад холбоо, унаа, мэдээллийн технологи болон ажлын байрны бусад хэрэгцээ үүсдэг.
+          </p>
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 1.15rem; background: rgba(56, 189, 248, 0.08); border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan);">
+          <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.35rem;">
+            Шийдвэрлүүлэх шаардлагатай асуудлууд:
+          </h4>
+          <p style="font-size: 0.86rem; color: #e2e8f0; line-height: 1.6;">
+            Иймд хэсгийн ахлагчийн цалин хөлс, урамшууллын хэмжээг ажлын ачаалал, гүйцэтгэх чиг үүрэг, хариуцлага, хөдөлмөрийн нөхцөл, амьжиргааны өртгийн өөрчлөлт болон төсвийн боломжтой уялдуулан судалж, <strong>нэмэгдүүлэх асуудлыг холбогдох эрх бүхий байгууллагад уламжлан шийдвэрлүүлэх нь зүйтэй</strong>. Мөн ажлын хэрэгцээнд шаардлагатай холбооны зардал, унааны зардал, тоног төхөөрөмж, мэдээллийн технологийн хүртээмжийг сайжруулж, ажил үүргээ хэвийн, шуурхай гүйцэтгэх нөхцөлийг бүрдүүлэх шаардлагатай байна.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 10: ЦААШИД ХЭРЭГЖҮҮЛЭХ АРГА ХЭМЖЭЭНИЙ САНАЛ (7 БАГЦ ЗӨВЛӨМЖ) -->
+  <section id="proposals" class="section-block">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="section-num">10</span>
+        <div>
+          <h2 class="section-title">Цаашид хэрэгжүүлэх арга хэмжээний санал</h2>
+          <p class="section-desc">Багийн ажлын албадын үйл ажиллагаа, хүний нөөц, хууль эрх зүйн орчныг сайжруулах 7 үндсэн санал</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="proposal-grid">
+      <!-- Proposal 1 -->
+      <div class="proposal-card">
+        <div class="proposal-num">1</div>
+        <div class="proposal-content">
+          <h4>Тогтвортой ажил эрхлэлт & Хувийн мэдээллийн аюулгүй байдал</h4>
+          <p>
+            Анхан шатны нэгжид ажиллаж буй гэрээт ажилтныг тогтвортой ажиллуулж, хүний хувийн мэдээллийн аюулгүй байдлыг задруулахгүй, үрэгдүүлэхгүй байх чиглэлээр тодорхой арга хэмжээ авах.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 2 -->
+      <div class="proposal-card">
+        <div class="proposal-num">2</div>
+        <div class="proposal-content">
+          <h4>Гүйцэтгэлийн үнэлгээ & Урамшууллын механизм</h4>
+          <p>
+            Ажлын гүйцэтгэлийг үнэлж, бодит үр дүн, ачаалалтай нь уялдуулан урамшуулах, үр дүнгийн урамшууллын оновчтой тогтолцоог бий болгох.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 3 -->
+      <div class="proposal-card">
+        <div class="proposal-num">3</div>
+        <div class="proposal-content">
+          <h4>Ажиллах орчин & Техник хэрэгслийн хангалт</h4>
+          <p>
+            Ажлын албаны ажиллах орчин нөхцөлийг сайжруулах, орчин үеийн компьютер, хэвлэх хувилах төхөөрөмж, өндөр хурдны интернетийн техник хэрэгслийн хүртээмжийг нэмэгдүүлэх.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 4 -->
+      <div class="proposal-card">
+        <div class="proposal-num">4</div>
+        <div class="proposal-content">
+          <h4>Хүний эрхийн мэдлэг & Хүчирхийллээс урьдчилан сэргийлэх сургалт</h4>
+          <p>
+            Багийн нийгмийн ажилтан, хэсгийн ахлагч нарын ажлын чиг үүргээс шалтгаалан гэр бүлийн хүчирхийлэл мөн хүүхдийн эрхийн зөрчил үйлдэгдсэн байж болзошгүй нөхцөл байдалд хэрхэн ажиллах талаар хүний эрхийн мэдлэг ойлголтыг нэмэгдүүлэх.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 5 -->
+      <div class="proposal-card">
+        <div class="proposal-num">5</div>
+        <div class="proposal-content">
+          <h4>Хэсгийн ахлагчийн эрх зүйн орчныг тодорхой болгох</h4>
+          <p>
+            Хэсгийн ахлагч нарын эрх зүйн байдал, гэрээгээр хүлээх хариуцлага, харилцах хүрээ хязгаар, баталгааг тодорхой болгосон дүрэм журмыг шинэчлэн боловсронгуй болгох.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 6 -->
+      <div class="proposal-card">
+        <div class="proposal-num">6</div>
+        <div class="proposal-content">
+          <h4>Нээлттэй утас & Иргэдийн санал хүсэлтийн шуурхай суваг</h4>
+          <p>
+            Ажлын албадад иргэдийн санал, хүсэлт гомдлыг хүлээн авах, мэдээлэл түгээх зориулалтаар нээлттэй лавлах утас тогтмол ажиллуулах.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proposal 7 -->
+      <div class="proposal-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(13, 30, 51, 0.95), rgba(22, 47, 80, 0.95)); border-color: var(--accent-cyan);">
+        <div class="proposal-num" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));">7</div>
+        <div class="proposal-content">
+          <h4>Цалин хөлс, нөхцөл болон чадавхыг цогцоор шийдвэрлэх арга хэмжээ</h4>
+          <p style="font-size: 0.95rem; color: #e2e8f0;">
+            Хэсгийн ахлагчийн цалин хөлс, ажиллах нөхцөлийг сайжруулах, эрх зүйн мэдлэг, ур чадварыг нэмэгдүүлэх асуудлыг харилцан уялдаатайгаар шийдвэрлэх нь зүйтэй.
+          </p>
+          <div style="margin-top: 0.85rem; padding: 1rem; background: rgba(0, 229, 255, 0.08); border-radius: var(--radius-md); font-size: 0.9rem; color: #bae6fd;">
+            <strong>Үр дүн ба хэрэгжүүлэх арга зам:</strong> Ингэснээр ажил үүргийн гүйцэтгэл, хариуцлага, иргэдэд үзүүлэх үйлчилгээний чанар сайжирч, төрийн байгууллага болон иргэдийн хамтын ажиллагаа бэхжих нөхцөл бүрдэнэ. Иймд холбогдох судалгаа, төсвийн тооцоо, эрх зүйн үндэслэлд тулгуурлан шаардлагатай арга хэмжээг <strong>үе шаттай хэрэгжүүлэх саналтай байна</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING BANNER -->
+  <div style="text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, rgba(13, 30, 51, 0.8), rgba(10, 22, 38, 0.9)); border: 1px solid var(--border-color); border-radius: var(--radius-xl); margin-top: 3rem;">
+    <h2 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; letter-spacing: -0.01em;">
+      АНХААРАЛ ХАНДУУЛСАНД БАЯРЛАЛАА
+    </h2>
+    <p style="font-size: 1rem; color: var(--accent-cyan); font-weight: 600;">
+      САЙНШАНД СУМЫН ЗАСАГ ДАРГЫН ТАМГЫН ГАЗАР — БАГИЙН АЖЛЫН АЛБАДУУД
+    </p>
+    <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+      <a href="#hero" class="tab-btn" style="text-decoration: none;"><i class="fa-solid fa-arrow-up"></i> Дээш очих</a>
+      <a href="index.html" class="tab-btn active" style="text-decoration: none;"><i class="fa-solid fa-file-invoice"></i> Бодлогын тайлан харах</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIGHTBOX MODAL -->
+<div id="lightboxModal" class="lightbox-modal" onclick="closeLightbox()">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightboxImg" class="lightbox-img" src="" alt="Томруулсан зураг" onclick="event.stopPropagation()">
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <img src="images/sainshand_logo.png" onerror="this.src='images_zurag_avalt/image1.png'" alt="Logo" style="height: 32px; width: auto;">
+      <span style="font-weight: 700; color: #fff; font-size: 0.95rem;">Сайншанд сумын Засаг даргын Тамгын газар</span>
+    </div>
+    <div class="footer-copy">
+      © 2026 он. Багийн ажлын албаны ажлын байрны зураг авалтын тайлан. Бүх эрх хуулиар хамгаалагдсан.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Ambient Particle Canvas Animation
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.4;
+    this.speedY = (Math.random() - 0.5) * 0.4;
+    this.alpha = Math.random() * 0.5 + 0.2;
+    this.color = Math.random() > 0.5 ? '#00e5ff' : '#38bdf8';
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0) this.x = canvas.width;
+    if (this.x > canvas.width) this.x = 0;
+    if (this.y < 0) this.y = canvas.height;
+    if (this.y > canvas.height) this.y = 0;
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < 45; i++) {
+  particles.push(new Particle());
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// Tabs Switcher
+function switchTab(evt, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+  evt.currentTarget.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// Lightbox Modal
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxModal').classList.add('active');
+}
+function closeLightbox() {
+  document.getElementById('lightboxModal').classList.remove('active');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// Chart.js Setup
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = "'Montserrat', sans-serif";
+Chart.defaults.font.size = 12;
+
+// 1. Chart: 56 Procedures Doughnut
+new Chart(document.getElementById('chartProcedures'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Хэрэгжиж буй (55 журам)', 'Хэрэгжээгүй (Ж.13 Шүүхэд төлөөлөх)'],
+    datasets: [{
+      data: [55, 1],
+      backgroundColor: ['#10b981', '#f43f5e'],
+      borderWidth: 2,
+      borderColor: '#07111e',
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' }
+    },
+    cutout: '72%'
+  }
+});
+
+// 2. Chart: Bag Buildings Year
+new Chart(document.getElementById('chartBuildings'), {
+  type: 'bar',
+  data: {
+    labels: ['2018 он', '2019 он', '2020 он', '2022 он'],
+    datasets: [{
+      label: 'Ашиглалтад орсон багийн тоо',
+      data: [4, 1, 2, 1],
+      backgroundColor: ['#38bdf8', '#10b981', '#f59e0b', '#00e5ff'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 3. Chart: Section Turnover by Bag
+new Chart(document.getElementById('chartSectionTurnover'), {
+  type: 'bar',
+  data: {
+    labels: ['1-р баг', '2-р баг', '3-р баг', '4-р баг', '5-р баг', '6-р баг', '7-р баг', '8-р баг'],
+    datasets: [{
+      label: 'Хэсгийн ахлагчийн шилжилт (хүн)',
+      data: [2, 5, 12, 7, 5, 5, 4, 5],
+      backgroundColor: [
+        '#38bdf8', '#38bdf8', '#f43f5e', '#f59e0b',
+        '#38bdf8', '#38bdf8', '#38bdf8', '#38bdf8'
+      ],
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          afterLabel: ctx => ctx.raw === 12 ? '⚠️ Хамгийн өндөр шилжилттэй баг' : ''
+        }
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { stepSize: 2 } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 4. Chart: Social Worker Turnover
+new Chart(document.getElementById('chartSocialTurnover'), {
+  type: 'bar',
+  data: {
+    labels: ['1-р', '2-р', '3-р', '4-р', '5-р', '6-р', '7-р', '8-р'],
+    datasets: [{
+      label: 'Нийгмийн ажилтан',
+      data: [1, 1, 1, 0, 1, 1, 0, 0],
+      backgroundColor: '#38bdf8',
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 5. Chart: Organizer Turnover
+new Chart(document.getElementById('chartOrganizerTurnover'), {
+  type: 'bar',
+  data: {
+    labels: ['1-р', '2-р', '3-р', '4-р', '5-р', '6-р', '7-р', '8-р'],
+    datasets: [{
+      label: 'Зохион байгуулагч',
+      data: [2, 0, 1, 0, 0, 0, 0, 0],
+      backgroundColor: '#a855f7',
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 6. Chart: Document Flow
+new Chart(document.getElementById('chartDocFlow'), {
+  type: 'bar',
+  data: {
+    labels: ['7 хоногт ирсэн', 'Сард ирсэн', 'Улиралд ирсэн', 'Хариутай бичиг', 'Хугацаа хоцроогүй'],
+    datasets: [{
+      label: 'Бичгийн тоо',
+      data: [22, 63, 182, 164, 164],
+      backgroundColor: ['#0284c7', '#38bdf8', '#2563eb', '#10b981', '#00e5ff'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 7. Chart: Monthly Citizen Participation
+new Chart(document.getElementById('chartMonthlyParticipation'), {
+  type: 'line',
+  data: {
+    labels: ['4-р сар (7 арга хэмжээ)', '5-р сар (4 арга хэмжээ)', '6-р сар (6 арга хэмжээ)', '9-10 сар (5 арга хэмжээ)'],
+    datasets: [{
+      label: 'Оролцсон иргэдийн тоо',
+      data: [1315, 403, 782, 3376],
+      borderColor: '#00e5ff',
+      backgroundColor: 'rgba(0, 229, 255, 0.15)',
+      fill: true,
+      tension: 0.35,
+      pointRadius: 6,
+      pointHoverRadius: 9,
+      pointBackgroundColor: '#07111e',
+      pointBorderColor: '#00e5ff',
+      pointBorderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 8. Chart: Service Fulfillment Rate
+new Chart(document.getElementById('chartServiceRate'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Үйлчилгээ авч чадсан (2,168)', 'Авч чадаагүй (30)'],
+    datasets: [{
+      data: [2168, 30],
+      backgroundColor: ['#10b981', '#f43f5e'],
+      borderWidth: 2,
+      borderColor: '#07111e'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    cutout: '70%'
+  }
+});
+
+// 9. Chart: 5-Year Dynamic Grouped Bar Chart
+new Chart(document.getElementById('chartFiveYearDynamic'), {
+  type: 'bar',
+  data: {
+    labels: ['1-р баг', '2-р баг', '3-р баг', '4-р баг', '6-р баг', '7-р баг', '8-р баг'],
+    datasets: [
+      { label: '2022 он', data: [313, 381, 269, 213, 220, 281, 295], backgroundColor: '#64748b' },
+      { label: '2023 он', data: [750, 730, 550, 391, 258, 258, 361], backgroundColor: '#38bdf8' },
+      { label: '2024 он', data: [850, 650, 200, 346, 201, 201, 378], backgroundColor: '#2563eb' },
+      { label: '2025 он', data: [532, 544, 535, 405, 758, 780, 713], backgroundColor: '#a855f7' },
+      { label: '2026 он', data: [601, 656, 577, 561, 667, 661, 569], backgroundColor: '#00e5ff' }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 10. Chart: Satisfaction Survey by Bags (308 citizens)
+new Chart(document.getElementById('chartSatisfactionBags'), {
+  type: 'pie',
+  data: {
+    labels: ['1-р баг (40)', '2-р баг (51)', '3-р баг (40)', '4-р баг (41)', '6-р баг (80)', '7-р баг (16)', '8-р баг (40)'],
+    datasets: [{
+      data: [40, 51, 40, 41, 80, 16, 40],
+      backgroundColor: [
+        '#38bdf8', '#0284c7', '#2563eb', '#10b981', '#00e5ff', '#f59e0b', '#a855f7'
+      ],
+      borderWidth: 2,
+      borderColor: '#07111e'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right' }
+    }
+  }
+});
+
+// 11. Chart: Time Distribution (Pie)
+new Chart(document.getElementById('chartTimeDistribution'), {
+  type: 'pie',
+  data: {
+    labels: [
+      'Статистик, судалгаа (28%)',
+      'Хог хаягдлын чиглэл (24%)',
+      'Хамтарсан баг (23%)',
+      'Батлан хамгаалах (13%)',
+      'Иргэдийн оролцоог хангах (12%)'
+    ],
+    datasets: [{
+      data: [28, 24, 23, 13, 12],
+      backgroundColor: ['#38bdf8', '#10b981', '#a855f7', '#f59e0b', '#00e5ff'],
+      borderWidth: 2,
+      borderColor: '#07111e',
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+
+// 12. Chart: Regional Salary Comparison
+new Chart(document.getElementById('chartSalaryComp'), {
+  type: 'bar',
+  data: {
+    labels: [
+      'Баян-Өндөр (Орхон)',
+      'Улаанбаатар хот',
+      'Замын-Үүд (Дорноговь)',
+      'Сайншанд (Одоогийн)',
+      'Дархан (Дархан-Уул)'
+    ],
+    datasets: [
+      {
+        label: 'Үндсэн цалин (₮)',
+        data: [1300000, 1200000, 1000000, 1000000, 792000],
+        backgroundColor: '#2563eb',
+        borderRadius: 6
+      },
+      {
+        label: 'Нэмэгдэл хөлс (₮)',
+        data: [0, 0, 200000, 0, 0],
+        backgroundColor: '#10b981',
+        borderRadius: 6
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top' },
+      tooltip: {
+        callbacks: {
+          footer: items => {
+            let total = 0;
+            items.forEach(i => total += i.raw);
+            return 'Нийт дүн: ' + total.toLocaleString() + ' ₮';
+          }
+        }
+      }
+    },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.06)' },
+        ticks: {
+          callback: v => (v / 1000).toLocaleString() + ' мян'
+        }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
